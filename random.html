@@ -52,8 +52,6 @@
             line-height: 1.7;
             animation: naik 1s ease-out 0.3s both;
         }
-
-        /* === HITUNG MUNDUR PENUTUPAN === */
         .kotak-tutup {
             background: #FFF0F8;
             border-radius: 14px;
@@ -86,8 +84,6 @@
             to { transform: scale(1.06); }
         }
         .kotak-waktu span { font-size: 11px; opacity: 0.9; display: block; margin-top: 2px; }
-
-        /* === PERINGATAN PENUTUPAN === */
         .peringatan-tutup {
             background: #FFF2F2;
             color: #C00;
@@ -102,9 +98,307 @@
             from { opacity: 0.85; }
             to { opacity: 1; }
         }
-
         .tombol-play {
             background: linear-gradient(135deg, #FF66B2, #FF40A0);
+            color: #fff;
+            border: none;
+            padding: 14px 40px;
+            font-size: 18px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: naik 1s ease-out 0.5s both;
+        }
+        .tombol-play:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(255, 64, 160, 0.35); }
+        .tombol-play:disabled { background: #CCC; cursor: not-allowed; opacity: 0.7; }
+        .sembunyi { display: none !important; }
+        .baris-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            color: #CC0066;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 14px;
+            padding: 10px 12px;
+            background: #FFF0F8;
+            border-radius: 10px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .timer { color: #D63384; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 17px;
+            border: 2px solid #FFB3D9;
+            border-radius: 12px;
+            margin: 14px 0;
+            outline: none;
+            text-align: center;
+            color: #AA2E70;
+            transition: all 0.3s ease;
+        }
+        input:focus { border-color: #FF66B2; box-shadow: 0 0 0 4px rgba(255, 102, 178, 0.15); }
+        button {
+            background: #FF66B2;
+            color: #fff;
+            border: none;
+            padding: 11px 30px;
+            font-size: 16px;
+            border-radius: 11px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 102, 178, 0.25); }
+        .hasil {
+            margin-top: 20px;
+            font-size: 15px;
+            min-height: 28px;
+            padding: 8px;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .benar { color: #28A745; font-weight: 500; animation: kilat 0.4s ease-out; }
+        @keyframes kilat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+        .salah { color: #DC3545; font-weight: 500; }
+        .angka-benar {
+            margin-top: 14px;
+            padding-top: 10px;
+        }
+        .angka {
+            display: inline-block;
+            background: #FFB3D9;
+            color: #fff;
+            padding: 6px 13px;
+            border-radius: 14px;
+            margin: 4px;
+            font-size: 15px;
+            font-weight: 500;
+            animation: munculAngka 0.5s ease-out;
+        }
+        @keyframes munculAngka {
+            from { opacity: 0; transform: scale(0.4) rotate(-8deg); }
+            to { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+        .tombol-dana {
+            display: inline-block;
+            margin-top: 24px;
+            background: linear-gradient(135deg, #FFD700, #FFB800);
+            color: #8B4513;
+            padding: 13px 28px;
+            border-radius: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            animation: naikCepat 0.6s ease-out;
+        }
+        .tombol-dana:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 184, 0, 0.4); }
+        @keyframes naikCepat {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="kotak">
+    <div id="layarAwal">
+        <h1>🎀 Tebak Angka 🎀</h1>
+        <div class="info">
+            Tebak 4 angka berbeda dari 1–100<br>
+            Punya 7 kesempatan · Waktu main 2 menit<br>
+        </div>
+        <div class="kotak-tutup">
+            <div class="label-tutup">⏳ Penawaran berakhir dalam:</div>
+            <div class="sisa-tutup" id="hitungMundur">
+                <div class="kotak-waktu"><span id="hari">00</span><span>Hari</span></div>
+                <div class="kotak-waktu"><span id="jam">00</span><span>Jam</span></div>
+                <div class="kotak-waktu"><span id="menit">00</span><span>Menit</span></div>
+                <div class="kotak-waktu"><span id="detik">00</span><span>Detik</span></div>
+            </div>
+        </div>
+        <div id="peringatanBox" class="peringatan-tutup sembunyi">
+            ⚠️ PENAWARAN SUDAH BERAKHIR ⚠️
+        </div>
+        <button id="tombolMulai" class="tombol-play" onclick="cekBuka()">Mulai Bermain 🎮</button>
+    </div>
+
+    <div id="layarMain" class="sembunyi">
+        <h1>Tebak Angka</h1>
+        <div class="baris-info">
+            <span class="timer">⏱️ <span id="waktu">02:00</span></span>
+            <span>🎯 <span id="sisa">7</span> kali</span>
+            <span>✅ <span id="jumlahBenar">0</span>/4</span>
+        </div>
+        <input type="number" id="tebakan" placeholder="Masukkan angka..." min="1" max="100">
+        <br>
+        <button onclick="cekTebakan()">Tebak Sekarang</button>
+        <div class="hasil" id="hasil"></div>
+        <div class="angka-benar" id="angkaBenar"></div>
+        <a href="https://link.dana.id/danakaget?c=sl7bybcwq&r=fode4T&orderId=20260805101214884515010300166419491088943" class="tombol-dana sembunyi" id="tombolDana">🎁 Buka DANA Kaget</a>
+    </div>
+</div>
+
+<script>
+const TUTUPAN = new Date("2026-08-06T19:28:00+07:00");
+const JUMLAH = 4;
+const MAKS_COBA = 7;
+const MIN = 1, MAKS = 100;
+const WAKTU_MENIT = 2;
+
+function updateTutupan() {
+    const sekarang = new Date();
+    const selisih = TUTUPAN - sekarang;
+    if (selisih <= 0) {
+        document.getElementById("hitungMundur").innerHTML = "<div style='color:#C00;font-weight:bold;'>BERAKHIR</div>";
+        document.getElementById("peringatanBox").classList.remove("sembunyi");
+        document.getElementById("tombolMulai").disabled = true;
+        document.getElementById("tombolMulai").textContent = "Sudah Berakhir";
+        return;
+    }
+    const hari = Math.floor(selisih / (1000 * 60 * 60 * 24));
+    const jam = Math.floor((selisih / (1000 * 60 * 60)) % 24);
+    const menit = Math.floor((selisih / (1000 * 60)) % 60);
+    const detik = Math.floor((selisih / 1000) % 60);
+    document.getElementById("hari").textContent = String(hari).padStart(2, '0');
+    document.getElementById("jam").textContent = String(jam).padStart(2, '0');
+    document.getElementById("menit").textContent = String(menit).padStart(2, '0');
+    document.getElementById("detik").textContent = String(detik).padStart(2, '0');
+}
+setInterval(updateTutupan, 1000);
+updateTutupan();
+
+function cekBuka() {
+    if (new Date() >= TUTUPAN) {
+        alert("⚠️ Maaf, penawaran sudah berakhir ya 😢");
+        return;
+    }
+    mulaiMain();
+}
+
+let angkaRahasia = [];
+while (angkaRahasia.length < JUMLAH) {
+    let acak = Math.floor(Math.random() * MAKS) + MIN;
+    if (!angkaRahasia.includes(acak)) angkaRahasia.push(acak);
+}
+angkaRahasia.sort((a, b) => a - b);
+console.log("Angka rahasia:", angkaRahasia);
+
+let ditemukan = [];
+let sisa = MAKS_COBA;
+let sisaDetik = WAKTU_MENIT * 60;
+let timer;
+
+function mulaiMain() {
+    document.getElementById("layarAwal").classList.add("sembunyi");
+    document.getElementById("layarMain").classList.remove("sembunyi");
+    timer = setInterval(() => {
+        sisaDetik--;
+        let m = Math.floor(sisaDetik / 60);
+        let d = sisaDetik % 60;
+        document.getElementById("waktu").textContent = `${String(m).padStart(2,'0')}:${String(d).padStart(2,'0')}`;
+        if (sisaDetik <= 0) { clearInterval(timer); selesaiWaktu(); }
+    }, 1000);
+}
+
+function selesaiWaktu() {
+    document.getElementById("hasil").innerHTML = `<span class='salah'>⏰ Waktu habis! Jawaban: ${angkaRahasia.join(", ")}</span>`;
+    document.getElementById("tebakan").disabled = true;
+}
+
+// === FUNGSI PETUNJUK DIPERBAIKI ===
+function beriPetunjuk(val) {
+    // Ambil angka yang BELUM ditemukan saja
+    const belumKetemu = angkaRahasia.filter(n => !ditemukan.includes(n));
+    belumKetemu.sort((a, b) => a - b);
+
+    if (belumKetemu.length === 0) return "";
+
+    const terkecilSisa = belumKetemu[0];
+    const terbesarSisa = belumKetemu[belumKetemu.length - 1];
+
+    // Tebakan lebih kecil dari angka terkecil yang belum ketemu → suruh perbesar
+    if (val < terkecilSisa) {
+        return `❌ Salah! Coba angka LEBIH BESAR dari ${val}`;
+    }
+    // Tebakan lebih besar dari angka terbesar yang belum ketemu → suruh perkecil
+    else if (val > terbesarSisa) {
+        return `❌ Salah! Coba angka LEBIH KECIL dari ${val}`;
+    }
+    // Di antara angka yang belum ketemu → cari batas terdekat
+    else {
+        for (let i = 0; i < belumKetemu.length; i++) {
+            if (val < belumKetemu[i]) {
+                const batasBawah = belumKetemu[i - 1] || 0;
+                const batasAtas = belumKetemu[i];
+                if (val < batasAtas && val > batasBawah) {
+                    return `❌ Salah! Coba angka ${val < (batasBawah + batasAtas) / 2 ? 'LEBIH BESAR' : 'LEBIH KECIL'}`;
+                }
+            }
+        }
+        return val < belumKetemu[0] ? "❌ Salah! Coba angka LEBIH BESAR" : "❌ Salah! Coba angka LEBIH KECIL";
+    }
+}
+
+function cekTebakan() {
+    if (sisaDetik <= 0 || ditemukan.length === JUMLAH) return;
+    const val = parseInt(document.getElementById("tebakan").value);
+    const hasil = document.getElementById("hasil");
+    const sisaEl = document.getElementById("sisa");
+    const skorEl = document.getElementById("jumlahBenar");
+    const angkaEl = document.getElementById("angkaBenar");
+    const tombolDana = document.getElementById("tombolDana");
+    const input = document.getElementById("tebakan");
+
+    if (isNaN(val) || val < MIN || val > MAKS) {
+        hasil.innerHTML = "<span class='salah'>Masukkan angka antara 1–100</span>";
+        return;
+    }
+
+    if (angkaRahasia.includes(val)) {
+        if (!ditemukan.includes(val)) {
+            ditemukan.push(val);
+            ditemukan.sort((a, b) => a - b);
+            sisa = MAKS_COBA;
+            hasil.innerHTML = `<span class='benar'>✅ Benar! Kesempatan dikembalikan! 🎉</span>`;
+            skorEl.textContent = ditemukan.length;
+            angkaEl.innerHTML = ditemukan.map(a => `<span class='angka'>${a}</span>`).join("");
+            if (ditemukan.length === JUMLAH) {
+                clearInterval(timer);
+                hasil.innerHTML = `<span class='benar'>🎉 Semua angka ditemukan! Selamat!</span>`;
+                tombolDana.classList.remove("sembunyi");
+                input.disabled = true;
+            }
+        } else {
+            hasil.innerHTML = `<span class='salah'>⚠️ Angka ini sudah ditebak</span>`;
+        }
+    } else {
+        sisa--;
+        hasil.innerHTML = `<span class='salah'>${beriPetunjuk(val)}</span>`;
+    }
+
+    sisaEl.textContent = sisa;
+    if (sisa <= 0 && ditemukan.length < JUMLAH) {
+        clearInterval(timer);
+        hasil.innerHTML = `<span class='salah'>😢 Kesempatan habis! Jawaban: ${angkaRahasia.join(", ")}</span>`;
+        input.disabled = true;
+    }
+    input.value = "";
+}
+</script>
+</body>
+</html>
             color: #fff;
             border: none;
             padding: 14px 40px;
