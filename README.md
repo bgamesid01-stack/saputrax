@@ -1,2 +1,0 @@
-# saputrax
-ayo

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tebak Angka</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+        body {
+            background: #FFF0F8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .kotak {
+            background: #fff;
+            border: 2px solid #FFB3D9;
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #FF66B2;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .info {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .tombol-play {
+            background: linear-gradient(135deg, #FF66B2, #FF3399);
+            color: #fff;
+            border: none;
+            padding: 14px 36px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .sembunyi { display: none !important; }
+        .sisa, .skor {
+            color: #CC0066;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #FFB3D9;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            outline: none;
+            text-align: center;
+        }
+        button {
+            background: #FF66B2;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .hasil {
+            margin-top: 18px;
+            font-size: 15px;
+            color: #555;
+            min-height: 24px;
+        }
+        .benar { color: #2E8B57; }
+        .salah { color: #E64A67; }
+        .angka-benar {
+            margin-top: 12px;
+        }
+        .angka {
+            display: inline-block;
+            background: #FFB3D9;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin: 3px;
+            font-size: 14px;
+        }
+        .tombol-dana {
+            display: inline-block;
+            margin-top: 20px;
+            background: #FFD93D;
+            color: #8B4513;
+            padding: 10px 22px;
+            border-radius: 12px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="kotak">
+    <!-- LAYAR AWAL -->
+    <div id="layarAwal">
+        <h1>🎀 Tebak Angka 🎀</h1>
+        <div class="info">
+            Tebak 4 angka berbeda dari 1–100<br>
+            Kamu punya 17 kesempatan<br>
+            Kalau semua benar, hadiah muncul! 🎁
+        </div>
+        <button class="tombol-play" onclick="mulaiMain()">Main 🎮</button>
+    </div>
+
+    <!-- LAYAR PERMAINAN -->
+    <div id="layarMain" class="sembunyi">
+        <h1>Tebak Angka</h1>
+        <div class="info">4 angka berbeda · 1–100 · 17 kesempatan</div>
+        <div class="sisa">Kesempatan: <span id="sisa">17</span></div>
+        <div class="skor">✅ Benar: <span id="jumlahBenar">0</span> / 4</div>
+
+        <input type="number" id="tebakan" placeholder="Masukkan angka..." min="1" max="100">
+        <br>
+        <button onclick="cekTebakan()">Tebak</button>
+
+        <div class="hasil" id="hasil"></div>
+        <div class="angka-benar" id="angkaBenar"></div>
+
+        <a href="https://link.dana.id/danakaget?c=sl7bybcwq&r=fode4T&orderId=20260805101214884515010300166419491088943" class="tombol-dana sembunyi" id="tombolDana">Buka DANA Kaget 🎁</a>
+    </div>
+</div>
+
+<script>
+const JUMLAH = 4;
+const MAKS_COBA = 17;
+const MIN = 1, MAKS = 100;
+
+// Buat 4 angka acak berbeda
+let angkaRahasia = [];
+while (angkaRahasia.length < JUMLAH) {
+    let acak = Math.floor(Math.random() * MAKS) + MIN;
+    if (!angkaRahasia.includes(acak)) angkaRahasia.push(acak);
+}
+angkaRahasia.sort((a, b) => a - b);
+console.log("Angka rahasia:", angkaRahasia);
+
+let ditemukan = [];
+let sisa = MAKS_COBA;
+
+// Pindah ke layar permainan
+function mulaiMain() {
+    document.getElementById("layarAwal").classList.add("sembunyi");
+    document.getElementById("layarMain").classList.remove("sembunyi");
+}
+
+function cekTebakan() {
+    const val = parseInt(document.getElementById("tebakan").value);
+    const hasil = document.getElementById("hasil");
+    const sisaEl = document.getElementById("sisa");
+    const skorEl = document.getElementById("jumlahBenar");
+    const angkaEl = document.getElementById("angkaBenar");
+    const tombolDana = document.getElementById("tombolDana");
+
+    if (isNaN(val) || val < MIN || val > MAKS) {
+        hasil.innerHTML = "<span class='salah'>Masukkan angka 1–100</span>";
+        return;
+    }
+
+    sisa--;
+    sisaEl.textContent = sisa;
+
+    if (angkaRahasia.includes(val)) {
+        if (!ditemukan.includes(val)) {
+            ditemukan.push(val);
+            ditemukan.sort((a, b) => a - b);
+            hasil.innerHTML = `<span class='benar'>✅ Benar!</span>`;
+            skorEl.textContent = ditemukan.length;
+            angkaEl.innerHTML = ditemukan.map(a => `<span class='angka'>${a}</span>`).join("");
+
+            if (ditemukan.length === JUMLAH) {
+                hasil.innerHTML = `<span class='benar'>🎉 Semua angka ditemukan! Selamat!</span>`;
+                tombolDana.classList.remove("sembunyi");
+                document.getElementById("tebakan").disabled = true;
+            }
+        } else {
+            hasil.innerHTML = `<span class='salah'>⚠️ Sudah ditebak</span>`;
+        }
+    } else {
+        // Kasih petunjuk lebih besar / lebih kecil
+        const terkecil = angkaRahasia[0];
+        const terbesar = angkaRahasia[JUMLAH - 1];
+        if (val < terkecil) {
+            hasil.innerHTML = `<span class='salah'>❌ Salah! Coba LEBIH BESAR</span>`;
+        } else if (val > terbesar) {
+            hasil.innerHTML = `<span class='salah'>❌ Salah! Coba LEBIH KECIL</span>`;
+        } else {
+            // Cari posisi angka terdekat
+            let adaDiBawah = ditemukan.filter(x => x < val).length > 0;
+            let adaDiAtas = ditemukan.filter(x => x > val).length > 0;
+            if (!adaDiBawah) {
+                hasil.innerHTML = `<span class='salah'>❌ Salah! Coba LEBIH BESAR</span>`;
+            } else {
+                hasil.innerHTML = `<span class='salah'>❌ Salah! Coba LEBIH KECIL</span>`;
+            }
+        }
+    }
+
+    if (sisa <= 0 && ditemukan.length < JUMLAH) {
+        hasil.innerHTML = `<span class='salah'>😢 Habis! Jawaban: ${angkaRahasia.join(", ")}</span>`;
+        document.getElementById("tebakan").disabled = true;
+    }
+    document.getElementById("tebakan").value = "";
+}
+</script>
+</body>
+</html>
