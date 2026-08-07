@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layanan Pembayaran</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #FFF7E8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .wadah {
+    background: rgba(255, 255, 255, 0.85); /* Putih tembus pandang lembut */
+    backdrop-filter: blur(12px); /* Efek buram latar */
+    width: 100%;
+    max-width: 360px;
+    padding: 32px 28px;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(255, 153, 0, 0.12);
+    border: 1px solid rgba(255, 183, 77, 0.35);
+    animation: muncul 0.7s ease-out;
+}
+        @keyframes muncul {
+            from { opacity:0; transform: translateY(15px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+        h2 {
+    text-align: center;
+    color: #CC6600; /* Oranye kaya elegan */
+    margin-bottom: 28px;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+        .tombol-pilihan {
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 14px;
+
+    /* Gradasi lembut krem → krem hangat */
+    background: linear-gradient(135deg, #FFF8EB, #FFEFD6);
+
+    color: #B35000; /* Oranye mewah, tidak terlalu terang */
+    border: 1px solid #FFD4A3; /* Garis tepi tipis elegan */
+    border-radius: 14px; /* Sudut halus presisi */
+
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Segoe UI', 'Inter', sans-serif;
+    letter-spacing: 0.3px;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+
+    /* Bayangan tipis → terlihat mengambang ringan */
+    box-shadow: 0 3px 8px rgba(255, 153, 0, 0.08);
+}
+
+.tombol-pilihan:hover {
+    /* Saat disentuh: gradasi oranye lembut */
+    background: linear-gradient(135deg, #FFB74D, #FF9800);
+    color: #fff;
+    border-color: #FF9800;
+
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 153, 0, 0.2);
+}
+
+.tombol-pilihan:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(255, 153, 0, 0.15);
+}
+
+.tombol-pilihan:last-child {
+    margin-bottom: 0;
+}
+    </style>
+</head>
+<body>
+    <div class="wadah">
+        <h2>Pilih Layanan</h2>
+        <a href="ewallet.html" class="tombol-pilihan">E-Wallet</a>
+        <a href="pulsa.html" class="tombol-pilihan">Pulsa</a>
+        <a href="game.html" class="tombol-pilihan">Top Up Game</a>
+    </div>
+</body>
+</html>
