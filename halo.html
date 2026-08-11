@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hayo Mau Ngapain</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* Latar putih dengan efek kilap */
+            background: linear-gradient(120deg, #ffffff, #f8f9ff, #ffffff, #f0f4ff, #ffffff);
+            background-size: 400% 400%;
+            animation: kilap 4s ease infinite;
+        }
+
+        /* Animasi kilap bergerak halus */
+        @keyframes kilap {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .teks {
+            color: #000000;
+            font-size: 24px;
+            font-weight: 900;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="teks">hayo mau ngapain</div>
+</body>
+</html>
+
