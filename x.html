@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun!</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+        }
+
+        h1 {
+            color: #d63384;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Mini Game Styling */
+        .boxes {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .box {
+            font-size: 3rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+
+        .box:hover {
+            transform: scale(1.2);
+        }
+
+        /* Card Ucapan & Tombol Interaktif */
+        #wish-card, #final-card {
+            display: none;
+            animation: fadeIn 0.8s forwards;
+        }
+
+        .cake-emoji {
+            font-size: 4.5rem;
+            margin: 10px 0;
+            animation: bounce 1s infinite alternate;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            position: relative;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .btn-mau {
+            background-color: #2ed573;
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 213, 115, 0.4);
+        }
+
+        .btn-gak {
+            background-color: #ff4757;
+            color: white;
+            position: absolute;
+            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- TAMPILAN 1: MINI GAME -->
+        <div id="game-section">
+            <h1>Tebak Hadiah Ultah! 🎁</h1>
+            <p>Coba pilih satu dari 3 kado di bawah ini untuk melihat ucapan spesial kamu:</p>
+            <div class="boxes">
+                <span class="box" onclick="checkGift(1)">🎁</span>
+                <span class="box" onclick="checkGift(2)">🎁</span>
+                <span class="box" onclick="checkGift(3)">🎁</span>
+            </div>
+            <p id="hint" style="margin-top: 15px; font-size: 0.9rem; color: #888;"></p>
+        </div>
+
+        <!-- TAMPILAN 2: UCAPAN & AJAKAN SUAP -->
+        <div id="wish-card">
+            <h1>Selamat Ulang Tahun! 🎉✨</h1>
+            <div class="cake-emoji">🎂</div>
+            <p>Selamat bertambah umur ya! Semoga sehat selalu, makin bahagia, dan semua impianmu tercapai.</p>
+            
+            <p id="suap-text" style="font-weight: bold; color: #ff4757; font-size: 1.1rem;">
+                Aku suapin ya? aaaaaa 😮🍰
+            </p>
+
+            <div class="btn-group">
+                <button class="btn-mau" onclick="terimaSuapan()">Mau</button>
+                <button class="btn-gak" id="btnGak" onmouseover="kabur()" onclick="kabur()">Gak mau</button>
+            </div>
+        </div>
+
+        <!-- TAMPILAN 3: PESAN SETELAH KLIK MAU -->
+        <div id="final-card">
+            <h1>Yeyy! 🥳✨</h1>
+            <div class="cake-emoji">😋🍰</div>
+            <p style="font-size: 1.2rem; font-weight: bold; color: #d63384;">
+                Gitu donggg! Emmm nyam nyam 💖
+            </p>
+            <p style="color: #ff4757; font-size: 1.1rem; margin-top: 10px;">
+                Gimana, tambah enak kan kuenya? 😜✨
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const secretBox = Math.floor(Math.random() * 3) + 1;
+
+        function checkGift(boxNumber) {
+            const hint = document.getElementById('hint');
+            if (boxNumber === secretBox) {
+                document.getElementById('game-section').style.display = 'none';
+                document.getElementById('wish-card').style.display = 'block';
+                // Posisikan awal tombol 'Gak mau'
+                const btnGak = document.getElementById('btnGak');
+                btnGak.style.right = '20px';
+            } else {
+                hint.innerText = "Kado yang itu kosong! Coba pilih kado lain 😜";
+            }
+        }
+
+        // Fungsi membuat tombol "Gak mau" berpindah acak & ubah teks
+        function kabur() {
+            const btnGak = document.getElementById('btnGak');
+            const suapText = document.getElementById('suap-text');
+            
+            // Ubah teks bujukan
+            suapText.innerText = "Ayolah aku suapin ya aaa, aku suapin ya 🥺🍰";
+
+            // Hitung posisi acak di dalam area container
+            const container = document.querySelector('.container');
+            const maxX = container.clientWidth - btnGak.clientWidth - 40;
+            const maxY = container.clientHeight - btnGak.clientHeight - 40;
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            btnGak.style.left = randomX + 'px';
+            btnGak.style.top = randomY + 'px';
+        }
+
+        // Fungsi jika mengeklik tombol "Mau"
+        function terimaSuapan() {
+            document.getElementById('wish-card').style.display = 'none';
+            document.getElementById('final-card').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
