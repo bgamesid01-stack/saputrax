@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kejutan Spesial Untukmu 🎁</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap');
+
+        /* BASIC STYLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #1a1a2e; /* Tampilan redup awal */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            transition: background-color 2s ease-in-out;
+            text-align: center;
+        }
+
+        /* Kelas saat background berubah cerah */
+        body.cerah {
+            background: linear-gradient(135deg, #ffd1ff 0%, #fae8ff 100%);
+            color: #4a4a4a;
+        }
+
+        /* CONTAINER LAYAR */
+        .screen {
+            position: absolute;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+            transform: translateY(20px);
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* STEP 1 & 2: MINI GAME */
+        .lock-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .hint-text {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        input[type="text"] {
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid #ff7b9c;
+            outline: none;
+            font-size: 1rem;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        button {
+            background-color: #ff7b9c;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 123, 156, 0.4);
+        }
+
+        .pesan-error {
+            color: #ff4d4d;
+            margin-top: 10px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Efek Berkilau saat benar */
+        .glow-effect {
+            box-shadow: 0 0 30px #ffea00, 0 0 60px #ffea00 !important;
+            transition: box-shadow 0.5s ease-in-out;
+        }
+
+        /* STEP 3: TRANSISI */
+        .transisi-text {
+            font-size: 1.8rem;
+            font-family: 'Dancing Script', cursive;
+            color: #ff7b9c;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* STEP 4: KEJUTAN UTAMA */
+        .ucapan-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: #ff477e;
+            margin-bottom: 10px;
+        }
+
+        .ucapan-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #6a6a6a;
+        }
+
+        /* STEP 5: FOTO-FOTO */
+        .foto-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .foto {
+            width: 120px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: scale(0.8) translateY(30px);
+            border: 4px solid white;
+        }
+
+        /* Animasi masuk foto */
+        .foto.muncul {
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* KEYFRAMES ANIMASI */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUDIO: Kamu bisa mengganti file 'lagu-ultah.mp3' dengan link/audio asli milikmu -->
+<audio id="bgm" src="https://drive.google.com/uc?export=download&id=1wuPgX7X3VQh4BWbB7QLEpaG_vGo1wntO" preload="auto" loop></audio>
+
+    <!-- LANGKAH 1 & 2: LAYAR TERKUNCI -->
+    <div id="screen-lock" class="screen active">
+        <div class="lock-icon" id="ikon-kunci">🔒</div>
+        <p class="hint-text" id="teks-tantangan">Ada kejutan spesial yang dikunci...<br>Selesaikan tantangan untuk membukanya! ✨</p>
+        
+        <div id="area-input">
+            <p style="margin-bottom: 10px; font-size: 0.9rem; color: #ccc;">Clue1: Siapa orang yang paling cantik hari ini?</p>
+            <p style="margin-bottom: 10px; font-size: 0.9rem; color: #ccc;">Clue2: Diri sendiri</p>
+            <input type="text" id="jawaban" placeholder="Masukkan jawabanmu..." autocomplete="off">
+            <br>
+            <button onclick="cekJawaban()">Buka Kejutan</button>
+            <p class="pesan-error" id="pesan-error">Oops! Salah, coba lagi ya! 🤭</p>
+        </div>
+    </div>
+
+    <!-- LANGKAH 3: TRANSISI MELAYANG -->
+    <div id="screen-transisi" class="screen">
+        <p class="transisi-text">Sedang membuka kejutan... 🎁✨</p>
+    </div>
+
+    <!-- LANGKAH 4 & 5: UCAPAN & FOTO -->
+    <div id="screen-kejutan" class="screen">
+        <h1 class="ucapan-title">Happy Birthday! 🎉</h1>
+        <p class="ucapan-subtitle">Semoga hari-harimu seindah senyumanmu. Ini kejutan kecil untukmu! ❤️</p>
+        
+        <div class="foto-container">
+            <!-- Ganti URL src dengan foto aslimu -->
+            <img src="https://drive.google.com/thumbnail?id=1iKhj26DAy5auTHX-qDV81dX_OQ2BGIkP" class="foto" id="foto1" alt="Foto 1">
+            <img src="https://drive.google.com/thumbnail?id=101gNQlJnPN4uIpaBRgy1HOoSv4-_D4Mc" class="foto" id="foto2" alt="Foto 2">
+            <img src="https://drive.google.com/thumbnail?id=1l_1RgBIq06zWcopUWhran2w8fEeB021o" class="foto" id="foto3" alt="Foto 3">
+        </div>
+    </div>
+
+    <script>
+        function cekJawaban() {
+            const input = document.getElementById('jawaban').value.toLowerCase().trim();
+            const error = document.getElementById('pesan-error');
+            const ikon = document.getElementById('ikon-kunci');
+            const teks = document.getElementById('teks-tantangan');
+            const areaInput = document.getElementById('area-input');
+            const body = document.body;
+
+            // KATA KUNCI JAWABAN (Bisa kamu ubah, pisahkan dengan || jika ingin lebih dari satu)
+            if (input === 'aku' || input === 'namanya' || input === 'sayang') {
+                
+                // --- LANGKAH 2: BENAR & BERKILAU ---
+                error.style.opacity = '0';
+                ikon.innerHTML = '🔓';
+                teks.innerHTML = "✅ <b>BENAR SEKALI!</b> Kunci Terbuka! 🎉";
+                areaInput.style.display = 'none';
+                
+                // Efek cahaya di background
+                body.classList.add('glow-effect');
+
+                // --- LANGKAH 3: TRANSISI ---
+                setTimeout(() => {
+                    document.getElementById('screen-lock').classList.remove('active');
+                    body.classList.remove('glow-effect'); // matikan cahaya awal
+                    
+                    setTimeout(() => {
+                        document.getElementById('screen-transisi').classList.add('active');
+                    }, 500);
+                }, 2000);
+
+                // --- LANGKAH 4: UCAPAN MUNCUL & MUSIK MAIN ---
+                setTimeout(() => {
+                    document.getElementById('screen-transisi').classList.remove('active');
+                    
+                    // Latar jadi cerah
+                    body.classList.add('cerah');
+
+                    setTimeout(() => {
+                        document.getElementById('screen-kejutan').classList.add('active');
+                        
+                        // Putar Musik Otomatis (Browser mengizinkan ini karena diawali klik tombol)
+                        const audio = document.getElementById('musik');
+                        audio.volume = 0.6; // Volume 60% agar lembut
+                        audio.play();
+
+                        // --- LANGKAH 5: FOTO MUNCUL SATU PER SATU ---
+                        setTimeout(() => { document.getElementById('foto1').classList.add('muncul'); }, 1000);
+                        setTimeout(() => { document.getElementById('foto2').classList.add('muncul'); }, 2500);
+                        setTimeout(() => { document.getElementById('foto3').classList.add('muncul'); }, 4000);
+
+                    }, 800);
+                }, 5000); // Waktu transisi layar "Sedang membuka kejutan..."
+
+            } else {
+                // JIKA JAWABAN SALAH
+                error.style.opacity = '1';
+                setTimeout(() => {
+                    error.style.opacity = '0';
+                }, 2500);
+            }
+        }
+    </script>
+</body>
+</html>
