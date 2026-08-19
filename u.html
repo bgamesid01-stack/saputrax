@@ -1,277 +1,552 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kejutan Spesial Untukmu 🎁</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kejutan Spesial 🎁</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap');
 
-        /* BASIC STYLES */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: #1a1a2e; /* Tampilan redup awal */
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            transition: background-color 2s ease-in-out;
-            text-align: center;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* Kelas saat background berubah cerah */
-        body.cerah {
-            background: linear-gradient(135deg, #ffd1ff 0%, #fae8ff 100%);
-            color: #4a4a4a;
-        }
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      overflow-x: hidden;
+      transition: background 1.8s ease;
+    }
 
-        /* CONTAINER LAYAR */
-        .screen {
-            position: absolute;
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-            transform: translateY(20px);
-        }
+    body.unlocked {
+      background: linear-gradient(135deg, #fff5f7 0%, #ffe4ec 30%, #ffd6e7 60%, #fff0f5 100%);
+      color: #333;
+    }
 
-        .screen.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
+    /* ===== LOCKED SCREEN ===== */
+    #locked-screen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      z-index: 10;
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
 
-        /* STEP 1 & 2: MINI GAME */
-        .lock-icon {
-            font-size: 50px;
-            margin-bottom: 10px;
-            animation: float 3s ease-in-out infinite;
-        }
+    #locked-screen.fade-out {
+      opacity: 0;
+      transform: scale(0.95);
+      pointer-events: none;
+    }
 
-        .hint-text {
-            font-size: 1.2rem;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
+    .lock-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 15px rgba(255, 182, 193, 0.6));
+    }
 
-        input[type="text"] {
-            padding: 12px 20px;
-            border-radius: 25px;
-            border: 2px solid #ff7b9c;
-            outline: none;
-            font-size: 1rem;
-            width: 80%;
-            max-width: 300px;
-            text-align: center;
-            margin-bottom: 15px;
-            font-family: 'Quicksand', sans-serif;
-        }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
 
-        button {
-            background-color: #ff7b9c;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-family: 'Quicksand', sans-serif;
-        }
+    .lock-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      text-align: center;
+      max-width: 520px;
+      line-height: 1.5;
+      margin-bottom: 40px;
+      color: #ffd6e7;
+      text-shadow: 0 0 20px rgba(255, 182, 193, 0.4);
+    }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(255, 123, 156, 0.4);
-        }
+    .game-box {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 182, 193, 0.3);
+      border-radius: 24px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
 
-        .pesan-error {
-            color: #ff4d4d;
-            margin-top: 10px;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+    .question {
+      font-size: 1.15rem;
+      margin-bottom: 24px;
+      color: #ffe4ec;
+      font-weight: 500;
+    }
 
-        /* Efek Berkilau saat benar */
-        .glow-effect {
-            box-shadow: 0 0 30px #ffea00, 0 0 60px #ffea00 !important;
-            transition: box-shadow 0.5s ease-in-out;
-        }
+    #answer-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      outline: none;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s;
+    }
 
-        /* STEP 3: TRANSISI */
-        .transisi-text {
-            font-size: 1.8rem;
-            font-family: 'Dancing Script', cursive;
-            color: #ff7b9c;
-            animation: pulse 1.5s infinite;
-        }
+    #answer-input:focus {
+      box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.4);
+    }
 
-        /* STEP 4: KEJUTAN UTAMA */
-        .ucapan-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3rem;
-            color: #ff477e;
-            margin-bottom: 10px;
-        }
+    #submit-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #ff6b9d, #c44569);
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: 'Poppins', sans-serif;
+    }
 
-        .ucapan-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            color: #6a6a6a;
-        }
+    #submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+    }
 
-        /* STEP 5: FOTO-FOTO */
-        .foto-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
+    #submit-btn:active {
+      transform: translateY(0);
+    }
 
-        .foto {
-            width: 120px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            opacity: 0;
-            transform: scale(0.8) translateY(30px);
-            border: 4px solid white;
-        }
+    .feedback {
+      margin-top: 18px;
+      font-size: 0.95rem;
+      min-height: 24px;
+      transition: all 0.3s;
+    }
 
-        /* Animasi masuk foto */
-        .foto.muncul {
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+    .feedback.wrong {
+      color: #ff8a8a;
+    }
 
-        /* KEYFRAMES ANIMASI */
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.05); }
-        }
-        @keyframes popIn {
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-    </style>
+    .feedback.correct {
+      color: #7dffb3;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    /* ===== SPARKLE OVERLAY ===== */
+    #sparkle-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    #sparkle-overlay.active {
+      opacity: 1;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      border-radius: 50%;
+      animation: sparkle 1.2s ease-out forwards;
+    }
+
+    @keyframes sparkle {
+      0% { transform: scale(0) rotate(0deg); opacity: 1; }
+      100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+    }
+
+    /* ===== TRANSITION MESSAGE ===== */
+    #transition-msg {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s;
+    }
+
+    #transition-msg.show {
+      opacity: 1;
+    }
+
+    #transition-msg h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      color: #ff6b9d;
+      text-shadow: 0 0 30px rgba(255, 107, 157, 0.4);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* ===== REVEAL SECTION ===== */
+    #reveal-section {
+      min-height: 100vh;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    #reveal-section.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .birthday-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 7vw, 3.5rem);
+      text-align: center;
+      background: linear-gradient(135deg, #ff6b9d, #c44569, #ff8fab);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .birthday-title.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .birthday-msg {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      text-align: center;
+      max-width: 560px;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 1.2s 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .birthday-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .photos-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      max-width: 900px;
+    }
+
+    .photo-card {
+      width: 260px;
+      height: 320px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(255, 107, 157, 0.25);
+      opacity: 0;
+      transform: scale(0.8) translateY(40px);
+      transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+    }
+
+    .photo-card.show {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 3px solid rgba(255, 255, 255, 0.6);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: fixed;
+      font-size: 1.2rem;
+      opacity: 0.6;
+      animation: floatUp 6s linear infinite;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Music indicator */
+    .music-note {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(255, 107, 157, 0.9);
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 20;
+    }
+
+    .music-note.show {
+      opacity: 1;
+      animation: bounce 1.5s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @media (max-width: 600px) {
+      .photo-card {
+        width: 220px;
+        height: 270px;
+      }
+      .game-box {
+        padding: 28px 22px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- AUDIO: Kamu bisa mengganti file 'lagu-ultah.mp3' dengan link/audio asli milikmu -->
-<audio id="bgm" src="https://drive.google.com/download&id=1wuPgX7X3VQh4BWbB7QLEpaG_vGo1wntO" preload="auto" loop></audio>
+  <!-- LOCKED SCREEN -->
+  <div id="locked-screen">
+    <div class="lock-icon">🔒</div>
+    <h1 class="lock-title">Ada kejutan spesial yang dikunci...<br>selesaikan tantangan untuk membukanya! ✨</h1>
 
-    <!-- LANGKAH 1 & 2: LAYAR TERKUNCI -->
-    <div id="screen-lock" class="screen active">
-        <div class="lock-icon" id="ikon-kunci">🔒</div>
-        <p class="hint-text" id="teks-tantangan">Ada kejutan spesial yang dikunci...<br>Selesaikan tantangan untuk membukanya! ✨</p>
-        
-        <div id="area-input">
-            <p style="margin-bottom: 10px; font-size: 0.9rem; color: #ccc;">Clue1: Siapa orang yang paling cantik hari ini?</p>
-            <p style="margin-bottom: 10px; font-size: 0.9rem; color: #ccc;">Clue2: Diri sendiri</p>
-            <input type="text" id="jawaban" placeholder="Masukkan jawabanmu..." autocomplete="off">
-            <br>
-            <button onclick="cekJawaban()">Buka Kejutan</button>
-            <p class="pesan-error" id="pesan-error">Oops! Salah, coba lagi ya! 🤭</p>
-        </div>
+    <div class="game-box">
+      <p class="question" id="question-text">Apa warna kesukaanmu yang paling spesial? 🌸</p>
+      <input type="text" id="answer-input" placeholder="Ketik jawabanmu di sini..." autocomplete="off" />
+      <p class="question" id="question-text">clue: muda🌸</p>
+      <button id="submit-btn">Kirim Jawaban ✨</button>
+      <div class="feedback" id="feedback"></div>
     </div>
+  </div>
 
-    <!-- LANGKAH 3: TRANSISI MELAYANG -->
-    <div id="screen-transisi" class="screen">
-        <p class="transisi-text">Sedang membuka kejutan... 🎁✨</p>
+  <!-- SPARKLE -->
+  <div id="sparkle-overlay"></div>
+
+  <!-- TRANSITION -->
+  <div id="transition-msg">
+    <h2>Sedang membuka kejutan... 🎁</h2>
+  </div>
+
+  <!-- REVEAL -->
+  <section id="reveal-section">
+    <h1 class="birthday-title" id="bday-title">Selamat Ulang Tahun! 🎂✨</h1>
+    <p class="birthday-msg" id="bday-msg">
+      Hari ini adalah hari istimewa untuk seseorang yang sangat berharga.<br>
+      Semoga semua impianmu menjadi kenyataan, dan kebahagiaan selalu menyertaimu setiap hari.<br><br>
+      Kamu pantas mendapatkan semua yang terbaik di dunia ini 💖
+    </p>
+
+    <div class="photos-container">
+      <div class="photo-card" id="photo1">
+        <img src="https://drive.google.com/thumbnail?id=1iKhj26DAy5auTHX-qDV81dX_OQ2BGIkP" alt="Foto 1" />
+      </div>
+      <div class="photo-card" id="photo2">
+        <img src="https://drive.google.com/thumbnail?id=101gNQlJnPN4uIpaBRgy1HOoSv4-_D4Mc" alt="Foto 2" />
+      </div>
+      <div class="photo-card" id="photo3">
+        <img src="https://drive.google.com/thumbnail?id=1l_1RgBIq06zWcopUWhran2w8fEeB021o" alt="Foto 3" />
+      </div>
     </div>
+  </section>
 
-    <!-- LANGKAH 4 & 5: UCAPAN & FOTO -->
-    <div id="screen-kejutan" class="screen">
-        <h1 class="ucapan-title">Happy Birthday! 🎉</h1>
-        <p class="ucapan-subtitle">Semoga hari-harimu seindah senyumanmu. Ini kejutan kecil untukmu! ❤️</p>
-        
-        <div class="foto-container">
-            <!-- Ganti URL src dengan foto aslimu -->
-            <img src="https://drive.google.com/thumbnail?id=1iKhj26DAy5auTHX-qDV81dX_OQ2BGIkP" class="foto" id="foto1" alt="Foto 1">
-            <img src="https://drive.google.com/thumbnail?id=101gNQlJnPN4uIpaBRgy1HOoSv4-_D4Mc" class="foto" id="foto2" alt="Foto 2">
-            <img src="https://drive.google.com/thumbnail?id=1l_1RgBIq06zWcopUWhran2w8fEeB021o" class="foto" id="foto3" alt="Foto 3">
-        </div>
-    </div>
+  <!-- Music indicator -->
+  <div class="music-note" id="music-note">🎵</div>
 
-    <script>
-        function cekJawaban() {
-            const input = document.getElementById('jawaban').value.toLowerCase().trim();
-            const error = document.getElementById('pesan-error');
-            const ikon = document.getElementById('ikon-kunci');
-            const teks = document.getElementById('teks-tantangan');
-            const areaInput = document.getElementById('area-input');
-            const body = document.body;
+  <!-- AUDIO (ganti src dengan link musik kamu) -->
+  <audio id="bday-audio" loop preload="auto">
+    <!-- Contoh: ganti dengan link musik ulang tahun kamu -->
+    <source src="https://www.image2url.com/r2/default/audio/1787179387950-26459055-dc2b-44e1-944b-211d0106256f.mp3" type="audio/mpeg">
+  </audio>
 
-            // KATA KUNCI JAWABAN (Bisa kamu ubah, pisahkan dengan || jika ingin lebih dari satu)
-            if (input === 'aku' || input === 'namanya' || input === 'sayang') {
-                
-                // --- LANGKAH 2: BENAR & BERKILAU ---
-                error.style.opacity = '0';
-                ikon.innerHTML = '🔓';
-                teks.innerHTML = "✅ <b>BENAR SEKALI!</b> Kunci Terbuka! 🎉";
-                areaInput.style.display = 'none';
-                
-                // Efek cahaya di background
-                body.classList.add('glow-effect');
+  <script>
+    // ===================== KONFIGURASI =====================
+    const CORRECT_ANSWER = "pink";           // ← Ganti jawaban rahasia di sini (huruf kecil)
+    const QUESTION = "Apa warna kesukaanmu yang paling spesial? 🌸"; // ← Ganti pertanyaan
 
-                // --- LANGKAH 3: TRANSISI ---
-                setTimeout(() => {
-                    document.getElementById('screen-lock').classList.remove('active');
-                    body.classList.remove('glow-effect'); // matikan cahaya awal
-                    
-                    setTimeout(() => {
-                        document.getElementById('screen-transisi').classList.add('active');
-                    }, 500);
-                }, 2000);
+    // Teks ucapan (bisa diganti)
+    const TITLE_TEXT = "Selamat Ulang Tahun! 🎂✨";
+    const MESSAGE_TEXT = `Hari ini adalah hari istimewa untuk seseorang yang sangat berharga.<br>
+      Semoga semua impianmu menjadi kenyataan, dan kebahagiaan selalu menyertaimu setiap hari.<br><br>
+      Kamu pantas mendapatkan semua yang terbaik di dunia ini 💖`;
 
-                // --- LANGKAH 4: UCAPAN MUNCUL & MUSIK MAIN ---
-                setTimeout(() => {
-                    document.getElementById('screen-transisi').classList.remove('active');
-                    
-                    // Latar jadi cerah
-                    body.classList.add('cerah');
+    // =======================================================
 
-                    setTimeout(() => {
-                        document.getElementById('screen-kejutan').classList.add('active');
-                        
-                        // Putar Musik Otomatis (Browser mengizinkan ini karena diawali klik tombol)
-                        const audio = document.getElementById('musik');
-                        audio.volume = 0.6; // Volume 60% agar lembut
-                        audio.play();
+    // Set pertanyaan
+    document.getElementById('question-text').textContent = QUESTION;
+    document.getElementById('bday-title').innerHTML = TITLE_TEXT;
+    document.getElementById('bday-msg').innerHTML = MESSAGE_TEXT;
 
-                        // --- LANGKAH 5: FOTO MUNCUL SATU PER SATU ---
-                        setTimeout(() => { document.getElementById('foto1').classList.add('muncul'); }, 1000);
-                        setTimeout(() => { document.getElementById('foto2').classList.add('muncul'); }, 2500);
-                        setTimeout(() => { document.getElementById('foto3').classList.add('muncul'); }, 4000);
+    const input = document.getElementById('answer-input');
+    const btn = document.getElementById('submit-btn');
+    const feedback = document.getElementById('feedback');
+    const lockedScreen = document.getElementById('locked-screen');
+    const sparkleOverlay = document.getElementById('sparkle-overlay');
+    const transitionMsg = document.getElementById('transition-msg');
+    const revealSection = document.getElementById('reveal-section');
+    const audio = document.getElementById('bday-audio');
+    const musicNote = document.getElementById('music-note');
 
-                    }, 800);
-                }, 5000); // Waktu transisi layar "Sedang membuka kejutan..."
+    // Cek jawaban
+    function checkAnswer() {
+      const answer = input.value.trim().toLowerCase();
 
-            } else {
-                // JIKA JAWABAN SALAH
-                error.style.opacity = '1';
-                setTimeout(() => {
-                    error.style.opacity = '0';
-                }, 2500);
-            }
-        }
-    </script>
+      if (!answer) {
+        feedback.textContent = "Tulis jawabannya dulu ya 😊";
+        feedback.className = "feedback wrong";
+        return;
+      }
+
+      if (answer === CORRECT_ANSWER.toLowerCase()) {
+        // BENAR!
+        feedback.textContent = "✅ BENAR SEKALI! Kunci Terbuka! 🎉";
+        feedback.className = "feedback correct";
+        btn.disabled = true;
+        input.disabled = true;
+
+        // Sparkle effect
+        createSparkles();
+        sparkleOverlay.classList.add('active');
+
+        // Mulai alur unlock
+        setTimeout(startUnlockSequence, 1600);
+      } else {
+        feedback.textContent = "❌ Belum tepat... coba lagi ya! 💪";
+        feedback.className = "feedback wrong";
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    // Sparkle particles
+    function createSparkles() {
+      for (let i = 0; i < 40; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.style.left = Math.random() * 100 + 'vw';
+        s.style.top = Math.random() * 100 + 'vh';
+        s.style.background = ['#ff6b9d', '#ffd6e7', '#fff', '#ff8fab', '#c44569'][Math.floor(Math.random()*5)];
+        s.style.animationDelay = Math.random() * 0.6 + 's';
+        sparkleOverlay.appendChild(s);
+      }
+    }
+
+    // Alur unlock
+    function startUnlockSequence() {
+      // 1. Fade out game
+      lockedScreen.classList.add('fade-out');
+
+      // 2. Tampilkan pesan transisi
+      setTimeout(() => {
+        transitionMsg.classList.add('show');
+      }, 600);
+
+      // 3. Ganti background & hilangkan pesan transisi
+      setTimeout(() => {
+        document.body.classList.add('unlocked');
+        transitionMsg.classList.remove('show');
+      }, 2400);
+
+      // 4. Tampilkan reveal + musik
+      setTimeout(() => {
+        lockedScreen.style.display = 'none';
+        revealSection.classList.add('show');
+
+        // Play musik
+        audio.play().catch(e => console.log("Autoplay dicegah browser, tapi user sudah interaktif"));
+        musicNote.classList.add('show');
+
+        // Animasi judul & pesan
+        setTimeout(() => {
+          document.getElementById('bday-title').classList.add('show');
+          document.getElementById('bday-msg').classList.add('show');
+        }, 300);
+
+        // Foto muncul satu per satu
+        setTimeout(() => document.getElementById('photo1').classList.add('show'), 1200);
+        setTimeout(() => document.getElementById('photo2').classList.add('show'), 2200);
+        setTimeout(() => document.getElementById('photo3').classList.add('show'), 3200);
+
+        // Floating hearts
+        createHearts();
+      }, 3200);
+    }
+
+    // Floating hearts
+    function createHearts() {
+      setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.textContent = ['💖', '💕', '💗', '✨', '🌸'][Math.floor(Math.random()*5)];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.fontSize = (Math.random() * 1.2 + 0.8) + 'rem';
+        heart.style.animationDuration = (Math.random() * 4 + 5) + 's';
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 9000);
+      }, 700);
+    }
+
+    // Event listeners
+    btn.addEventListener('click', checkAnswer);
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') checkAnswer();
+    });
+
+    // Focus input saat load
+    window.addEventListener('load', () => input.focus());
+  </script>
 </body>
 </html>
