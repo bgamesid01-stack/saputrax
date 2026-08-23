@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>HTML 2 - Penerima Komentar GitHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; }
+        .card { 
+            border: 1px solid #d0d7de; padding: 12px; 
+            border-radius: 6px; margin-bottom: 12px; background: #f6f8fa; 
+        }
+        .author { font-weight: bold; color: #0969da; margin-bottom: 5px; }
+        .avatar { width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; }
+    </style>
+</head>
+<body>
+    <h2>HTML 2: Komentar Masuk dari GitHub</h2>
+    <div id="wadahKomentar">Memuat komentar dari GitHub...</div>
+
+    <script>
+        // Ganti dengan USERNAME, REPO, dan NOMOR_ISSUE milikmu
+        const USERNAME = 'USERNAME';
+        const REPO = 'REPO';
+        const ISSUE_NUMBER = '1';
+
+        async function ambilKomentarGitHub() {
+            const wadah = document.getElementById('wadahKomentar');
+            const url = `https://api.github.com/repos/${USERNAME}/${REPO}/issues/${ISSUE_NUMBER}/comments`;
+
+            try {
+                const response = await fetch(url);
+                const comments = await response.json();
+
+                if (comments.length === 0) {
+                    wadah.innerHTML = '<i>Belum ada komentar di GitHub Issue ini.</i>';
+                    return;
+                }
+
+                wadah.innerHTML = '';
+                // Tampilkan komentar dari yang terbaru
+                comments.reverse().forEach(comment => {
+                    const div = document.createElement('div');
+                    div.className = 'card';
+                    div.innerHTML = `
+                        <div class="author">
+                            <img src="${comment.user.avatar_url}" class="avatar"> 
+                            ${comment.user.login}
+                        </div>
+                        <div>${comment.body}</div>
+                    `;
+                    wadah.appendChild(div);
+                });
+            } catch (error) {
+                wadah.innerHTML = 'Gagal memuat komentar. Pastikan nama Username/Repo benar.';
+            }
+        }
+
+        // Panggil fungsi saat halaman dibuka
+        ambilKomentarGitHub();
+    </script>
+</body>
+</html>
