@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>HTML 2 - Penerima Komentar GitHub</title>
+    <title>HTML 2 - Penerima Komentar</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; }
         .card { 
@@ -10,34 +10,35 @@
             border-radius: 6px; margin-bottom: 12px; background: #f6f8fa; 
         }
         .author { font-weight: bold; color: #0969da; margin-bottom: 5px; }
-        .avatar { width: 20px; height: 20px; border-radius: 50%; vertical-align: middle; }
+        .avatar { width: 22px; height: 22px; border-radius: 50%; vertical-align: middle; margin-right: 5px; }
     </style>
 </head>
 <body>
-    <h2>HTML 2: Komentar Masuk dari GitHub</h2>
+    <h2>Daftar Komentar Masuk (dari saputrax)</h2>
     <div id="wadahKomentar">Memuat komentar dari GitHub...</div>
 
     <script>
-        // Ganti dengan USERNAME, REPO, dan NOMOR_ISSUE milikmu
-        const USERNAME = 'USERNAME';
-        const REPO = 'REPO';
+        // Data repositorimu
+        const USERNAME = 'bgamesid01-stack'; 
+        const REPO = 'saputrax';
         const ISSUE_NUMBER = '1';
 
-        async function ambilKomentarGitHub() {
+        const API_URL = `https://api.github.com/repos/${USERNAME}/${REPO}/issues/${ISSUE_NUMBER}/comments`;
+
+        async function ambilKomentar() {
             const wadah = document.getElementById('wadahKomentar');
-            const url = `https://api.github.com/repos/${USERNAME}/${REPO}/issues/${ISSUE_NUMBER}/comments`;
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(API_URL);
                 const comments = await response.json();
 
-                if (comments.length === 0) {
-                    wadah.innerHTML = '<i>Belum ada komentar di GitHub Issue ini.</i>';
+                if (!Array.isArray(comments) || comments.length === 0) {
+                    wadah.innerHTML = '<i>Belum ada komentar. Coba tulis komentar pertama lewat halaman1.html!</i>';
                     return;
                 }
 
                 wadah.innerHTML = '';
-                // Tampilkan komentar dari yang terbaru
+                // Tampilkan dari yang terbaru
                 comments.reverse().forEach(comment => {
                     const div = document.createElement('div');
                     div.className = 'card';
@@ -51,12 +52,12 @@
                     wadah.appendChild(div);
                 });
             } catch (error) {
-                wadah.innerHTML = 'Gagal memuat komentar. Pastikan nama Username/Repo benar.';
+                wadah.innerHTML = 'Gagal memuat data dari GitHub.';
             }
         }
 
         // Panggil fungsi saat halaman dibuka
-        ambilKomentarGitHub();
+        ambilKomentar();
     </script>
 </body>
 </html>
