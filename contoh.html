@@ -1,321 +1,95 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Untuk Kamu 💌</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --cream:#FFF8F2;
-    --paper:#FFFDFB;
-    --blush:#FFD9E2;
-    --rose:#C6486B;
-    --coral:#FF6F91;
-    --lavender:#C9B8E8;
-    --sage:#B7C9A8;
-    --ink:#4A3B3F;
-  }
-  *{box-sizing:border-box;}
-  html,body{height:100%;}
-  body{
-    margin:0;
-    min-height:100vh;
-    min-height:100dvh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:'Quicksand',sans-serif;
-    color:var(--ink);
-    background:
-      radial-gradient(circle at 15% 20%, var(--blush) 0%, transparent 45%),
-      radial-gradient(circle at 85% 15%, var(--lavender) 0%, transparent 40%),
-      radial-gradient(circle at 80% 88%, var(--sage) 0%, transparent 40%),
-      var(--cream);
-    overflow:hidden;
-    position:relative;
-    padding:20px;
-  }
-  .blob{position:fixed;border-radius:50%;filter:blur(50px);opacity:.5;z-index:0;}
-  .blob1{width:260px;height:260px;background:var(--blush);top:-60px;left:-60px;animation:drift 14s ease-in-out infinite;}
-  .blob2{width:220px;height:220px;background:var(--lavender);bottom:-50px;right:-50px;animation:drift 16s ease-in-out infinite reverse;}
-  @keyframes drift{0%,100%{transform:translate(0,0);}50%{transform:translate(20px,15px);}}
-  .sticker{position:fixed;font-size:20px;opacity:.6;z-index:0;pointer-events:none;}
-  .s1{top:8%;left:9%;transform:rotate(-12deg);}
-  .s2{bottom:9%;left:7%;transform:rotate(10deg);font-size:17px;}
-  .s3{top:11%;right:8%;transform:rotate(14deg);font-size:19px;}
-  .s4{bottom:7%;right:11%;transform:rotate(-8deg);font-size:15px;}
-  .card{
-    position:relative;z-index:1;background:var(--paper);width:100%;max-width:400px;min-height:440px;
-    border-radius:14px 20px 16px 22px;
-    box-shadow:0 18px 40px rgba(198,72,107,.22), 0 2px 0 rgba(0,0,0,.03);
-    padding:44px 28px 32px;transform:rotate(-1deg);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .tape{
-    position:absolute;top:-16px;left:50%;transform:translateX(-50%) rotate(-3deg);
-    width:96px;height:30px;
-    background:repeating-linear-gradient(45deg, var(--sage), var(--sage) 6px, transparent 6px, transparent 12px), var(--sage);
-    opacity:.8;border-radius:2px;box-shadow:0 3px 6px rgba(0,0,0,.12);
-  }
-  .scene{display:none;flex-direction:column;align-items:center;text-align:center;gap:14px;animation:fadeIn .5s ease;width:100%;}
-  .scene.active{display:flex;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-  .emoji-big{font-size:42px;}
-  .line{font-size:16.5px;line-height:1.55;margin:0;max-width:280px;}
-  .eyebrow{font-size:13px;color:var(--rose);font-weight:700;letter-spacing:.03em;margin:0 0 -4px;}
-  .question{font-family:'Caveat',cursive;font-weight:700;font-size:34px;color:var(--rose);margin:2px 0 0;line-height:1.15;}
-  .hint{font-size:12.5px;color:#9a8a8e;font-style:italic;margin:0;}
-  .btn-next{
-    margin-top:6px;padding:11px 26px;border:2px dashed var(--rose);border-radius:40px;
-    background:var(--blush);color:var(--rose);font-family:'Quicksand',sans-serif;font-weight:700;
-    font-size:14.5px;cursor:pointer;transition:transform .18s ease, background .18s ease;
-  }
-  .btn-next:hover{transform:scale(1.05);background:#ffe4ec;}
-  .btn-next:focus-visible{outline:2px solid var(--rose);outline-offset:3px;}
-  .tease-text{min-height:18px;font-size:13.5px;color:var(--rose);font-weight:700;margin:0;}
-  .btn-container{position:relative;width:100%;height:190px;margin-top:4px;}
-  .btn-no,.btn-yes{position:absolute;border:none;cursor:pointer;font-family:'Quicksand',sans-serif;}
-  .btn-no{
-    padding:11px 22px;background:#fff;color:#8a7a7e;border:1.5px dashed #d8c9cd;border-radius:10px;
-    font-weight:600;font-size:14px;transition:transform .2s ease, opacity .2s ease;box-shadow:0 4px 10px rgba(0,0,0,.05);
-  }
-  .btn-no:focus-visible{outline:2px solid var(--rose);outline-offset:2px;}
-  .btn-yes{
-    width:72px;height:72px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, var(--coral), var(--rose) 75%);
-    color:#fff;font-family:'Caveat',cursive;font-weight:700;font-size:21px;
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:0 8px 18px rgba(198,72,107,.45), inset 0 -5px 8px rgba(0,0,0,.18), inset 0 3px 6px rgba(255,255,255,.35);
-    transition:left .28s cubic-bezier(.34,1.56,.64,1), top .28s cubic-bezier(.34,1.56,.64,1), transform .2s ease;
-  }
-  .btn-yes:focus-visible{outline:2px solid var(--ink);outline-offset:3px;}
-  .btn-yes.pulse{animation:pulse 1s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
-  .seal-big{
-    width:100px;height:100px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, var(--coral), var(--rose) 75%);
-    display:flex;align-items:center;justify-content:center;font-size:38px;
-    box-shadow:0 10px 24px rgba(198,72,107,.4), inset 0 -6px 10px rgba(0,0,0,.18), inset 0 4px 6px rgba(255,255,255,.35);
-    margin:0 auto;animation:stampIn .5s cubic-bezier(.34,1.56,.64,1);
-  }
-  @keyframes stampIn{0%{transform:scale(2.2);opacity:0;}60%{transform:scale(.9);opacity:1;}100%{transform:scale(1);}}
-  .final-heading{font-family:'Caveat',cursive;font-weight:700;font-size:30px;color:var(--rose);margin:4px 0 0;}
-  .signature{font-size:13px;color:#9a8a8e;font-style:italic;margin-top:6px;}
-  .restart{margin-top:8px;background:none;border:none;color:#b39a9e;font-size:12.5px;text-decoration:underline;cursor:pointer;}
-  .confetti-piece{position:fixed;top:-20px;z-index:5;pointer-events:none;animation:fall linear forwards;}
-.watermark {
-             position: fixed; /* tetap di tempat walau di-scroll */
-             top: 50%;
-             left: 50%;
-             transform: translate(-50%, -50%); /* beneran TENGAH */
-             font-size: 90px; /* ukuran gede, sesuaikan */
-             font-weight: bold;
-             color: rgba(0, 0, 0, 0.12); /* transparan — gak ganggu baca! */
-             pointer-events: none; /* gak ganggu klik konten di bawahnya */
-             user-select: none; /* gak bisa disalin/diblok */
-             z-index: 9999; /* 🔑 NILAI BESAR = SELALU DI DEPAN! */
-             text-align: center;
-             width: 100%;
-         }
-  @keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.2;}}
-  @media (max-width:380px){
-    .card{padding:36px 18px 26px;min-height:400px;}
-    .question{font-size:28px;}
-    .btn-container{height:170px;}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .blob,.btn-yes.pulse{animation:none !important;}
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tidak Dapat Diakses</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #ffffff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #111111;
+            font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Ikon bentuk garis-garis */
+        .ikon-garis {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .garis {
+            position: absolute;
+            background-color: #222222;
+            border-radius: 2px;
+        }
+        /* Garis mata kiri */
+        .garis-1 {
+            width: 12px;
+            height: 3px;
+            top: 22px;
+            left: 12px;
+            transform: rotate(15deg);
+        }
+        /* Garis mata kanan */
+        .garis-2 {
+            width: 12px;
+            height: 3px;
+            top: 22px;
+            right: 12px;
+            transform: rotate(-15deg);
+        }
+        /* Garis mulut bingung */
+        .garis-3 {
+            width: 32px;
+            height: 3px;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%) rotate(10deg);
+        }
+        /* Garis pinggir lingkaran */
+        .bingkai {
+            width: 64px;
+            height: 64px;
+            border: 3px solid #222222;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .teks {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+            text-align: center;
+            line-height: 1.8;
+            color: #222222;
+            max-width: 480px;
+            padding: 0 24px;
+        }
+    </style>
 </head>
 <body>
-<div class="watermark">SaputraX</div>
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-<div class="sticker s1">✦</div>
-<div class="sticker s2">🩷</div>
-<div class="sticker s3">✧</div>
-<div class="sticker s4">🌸</div>
-
-<div class="card">
-  <div class="tape"></div>
-
-  <div class="scene active" id="scene1">
-    <div class="emoji-big">👋</div>
-    <p class="line">Hai kamu…</p>
-    <p class="line">boleh minta waktu bentar nggak? 🥺</p>
-    <button class="btn-next" onclick="nextScene(1)">Boleh, lanjut →</button>
-  </div>
-
-  <div class="scene" id="scene2">
-    <div class="emoji-big">🌸</div>
-    <p class="line">Akhir-akhir ini ada satu orang yang bikin hari-hariku jadi lebih berwarna...</p>
-    <p class="line">dan orang itu... kamu. 🙈</p>
-    <button class="btn-next" onclick="nextScene(2)">Terus...? →</button>
-  </div>
-
-  <div class="scene" id="scene3">
-    <p class="eyebrow">sebelum lanjut, satu hal penting dulu ya</p>
-    <h1 class="question">Maukah kamu<br>jadi pacarku?</h1>
-    <p class="hint">(coba klik tombol "Iya" nya 👀)</p>
-    <p class="tease-text" id="teaseText">&nbsp;</p>
-    <div class="btn-container" id="btnContainer">
-      <button class="btn-no" id="btnNo">Nggak</button>
-      <button class="btn-yes" id="btnYes">Iya</button>
+    <!-- Ikon garis-garis pengganti emoji -->
+    <div class="ikon-garis">
+        <div class="bingkai"></div>
+        <div class="garis garis-1"></div>
+        <div class="garis garis-2"></div>
+        <div class="garis garis-3"></div>
     </div>
-  </div>
 
-  <div class="scene" id="scene4">
-    <div class="seal-big">💗</div>
-    <h1 class="final-heading">Yeayy, resmi jadian! 🎉</h1>
-    <p class="line">Makasih udah mau jadi pacarku.</p>
-    <p class="line">Mulai sekarang aku janji bakal selalu ada buat kamu, nemenin hari-harimu, dan bikin kamu senyum terus-terusan 🥰</p>
-    <p class="signature">— tersegel dengan hati, dariku untuk kamu 💌</p>
-  </div>
-</div>
-
-<script>
-  function nextScene(current){
-    document.getElementById('scene'+current).classList.remove('active');
-    document.getElementById('scene'+(current+1)).classList.add('active');
-    if(current+1===3){ enterGameScene(); }
-  }
-
-  var container, yesBtn, noBtn, teaseText;
-  var dodgeCount = 0;
-  var maxDodges = 6;
-  var noClicks = 0;
-  var bound = false;
-
-  var teaseMessages = [
-    "eh jangan lari dong 😆",
-    "yaa kena dikit lagi...",
-    "ish, gercep amat 🏃",
-    "ayo dong ditangkep 🥹",
-    "dikit lagi nih...",
-    "hayo jangan nyerah!"
-  ];
-  var noMessages = [
-    "yakin nih? 🥺",
-    "coba pikir lagi deh...",
-    "masa iya sih? 😳",
-    "hmm yakin banget?",
-    "yaudah gapapa, klik yang Iya aja ya 😆💕"
-  ];
-
-  function enterGameScene(){
-    container = document.getElementById('btnContainer');
-    yesBtn = document.getElementById('btnYes');
-    noBtn = document.getElementById('btnNo');
-    teaseText = document.getElementById('teaseText');
-
-    dodgeCount = 0;
-    noClicks = 0;
-    noBtn.style.transform = 'scale(1)';
-    noBtn.style.pointerEvents = 'auto';
-    noBtn.style.opacity = '1';
-    yesBtn.classList.remove('pulse');
-    teaseText.textContent = '\u00A0';
-
-    var cw = container.clientWidth;
-    var ch = container.clientHeight;
-    var noW = noBtn.offsetWidth || 90;
-    var yesW = yesBtn.offsetWidth || 72;
-    noBtn.style.left = Math.max(cw*0.28 - noW/2, 0) + 'px';
-    noBtn.style.top = (ch/2 - 20) + 'px';
-    yesBtn.style.left = Math.min(cw*0.7 - yesW/2, cw-yesW) + 'px';
-    yesBtn.style.top = (ch/2 - yesW/2) + 'px';
-
-    if(!bound){
-      bound = true;
-      container.addEventListener('mousemove', handleMove);
-      container.addEventListener('touchmove', handleTouchMove, {passive:true});
-      yesBtn.addEventListener('mouseenter', dodgeNow);
-      yesBtn.addEventListener('touchstart', function(e){
-        if(dodgeCount < maxDodges){ e.preventDefault(); dodgeNow(); }
-      }, {passive:false});
-      yesBtn.addEventListener('click', onYesClick);
-      noBtn.addEventListener('click', onNoClick);
-    }
-  }
-
-  function handleMove(e){
-    var rect = container.getBoundingClientRect();
-    checkDistance(e.clientX-rect.left, e.clientY-rect.top);
-  }
-  function handleTouchMove(e){
-    var t = e.touches[0];
-    if(!t) return;
-    var rect = container.getBoundingClientRect();
-    checkDistance(t.clientX-rect.left, t.clientY-rect.top);
-  }
-  function checkDistance(x,y){
-    if(dodgeCount >= maxDodges) return;
-    var bx = yesBtn.offsetLeft + yesBtn.offsetWidth/2;
-    var by = yesBtn.offsetTop + yesBtn.offsetHeight/2;
-    var dist = Math.hypot(x-bx, y-by);
-    if(dist < 75){ dodgeNow(); }
-  }
-  function dodgeNow(){
-    if(dodgeCount >= maxDodges) return;
-    dodgeCount++;
-    var cw = container.clientWidth;
-    var ch = container.clientHeight;
-    var bw = yesBtn.offsetWidth;
-    var bh = yesBtn.offsetHeight;
-    var newLeft = Math.random()*(cw-bw);
-    var newTop = Math.random()*(ch-bh);
-    yesBtn.style.left = newLeft+'px';
-    yesBtn.style.top = newTop+'px';
-    teaseText.textContent = teaseMessages[Math.floor(Math.random()*teaseMessages.length)];
-    if(dodgeCount >= maxDodges){
-      yesBtn.classList.add('pulse');
-      teaseText.textContent = 'oke oke, aku diem deh 😳💕';
-    }
-  }
-
-  function onYesClick(){
-    if(dodgeCount < maxDodges){ dodgeNow(); return; }
-    document.getElementById('scene3').classList.remove('active');
-    document.getElementById('scene4').classList.add('active');
-    launchConfetti();
-  }
-
-  function onNoClick(){
-    noClicks++;
-    if(noClicks <= noMessages.length){
-      teaseText.textContent = noMessages[noClicks-1];
-    }
-    var scale = Math.max(1-noClicks*0.18, 0.25);
-    noBtn.style.transform = 'scale('+scale+')';
-    if(scale <= 0.25){
-      noBtn.style.pointerEvents = 'none';
-      noBtn.style.opacity = '.35';
-    }
-  }
-
-  function launchConfetti(){
-    var symbols = ['💗','✨','🩷','💌','🌸'];
-    for(var i=0;i<24;i++){
-      var el = document.createElement('div');
-      el.className = 'confetti-piece';
-      el.textContent = symbols[Math.floor(Math.random()*symbols.length)];
-      el.style.left = Math.random()*100+'vw';
-      el.style.fontSize = (14+Math.random()*14)+'px';
-      el.style.animationDuration = (2.5+Math.random()*2)+'s';
-      el.style.animationDelay = (Math.random()*0.8)+'s';
-      document.body.appendChild(el);
-      (function(node){ setTimeout(function(){ node.remove(); }, 5000); })(el);
-    }
-  }
-
-  function resetAll(){
-    document.getElementById('scene4').classList.remove('active');
-    document.getElementById('scene1').classList.add('active');
-  }
-</script>
-
+    <div class="teks">Maaf, website ini tidak dapat diakses lagi</div>
 </body>
 </html>
