@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Sistem Spin Geser - Oranye</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+  body {
+    background: #FFF8EE;
+    color: #412402;
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  #reel-container {
+    position: relative;
+    width: 100%;
+    height: 104px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #FFFFFF;
+    border: 1.5px solid #EF9F27;
+    box-shadow: 0 4px 14px rgba(239, 159, 39, 0.18);
+    box-sizing: border-box;
+  }
+  #fade-mask {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #FFFFFF 0%, transparent 15%, transparent 85%, #FFFFFF 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+  #center-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #D85A30;
+    z-index: 3;
+    transform: translateX(-1.5px);
+  }
+  .tri-top, .tri-bottom {
+    position: absolute;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    transform: translateX(-9px);
+    z-index: 3;
+  }
+  .tri-top { top: 0; border-top: 11px solid #D85A30; }
+  .tri-bottom { bottom: 0; border-bottom: 11px solid #D85A30; }
+  #track {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  .item {
+    flex-shrink: 0;
+    width: 88px;
+    height: 82px;
+    margin-right: 10px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+    padding: 6px;
+    box-sizing: border-box;
+  }
+  .item img {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    object-fit: cover;
+  }
+  .item span {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  #spinBtn {
+    width: 170px;
+    font-weight: 600;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1px solid #BA7517;
+    background: #EF9F27;
+    color: #412402;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(239, 159, 39, 0.35);
+  }
+  #spinBtn:hover { background: #E08F17; }
+  #spinBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+  #resultBox {
+    min-height: 20px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: #BA7517;
+  }
+  #warningBox {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #FFF3DA;
+    border: 0.5px solid #EF9F27;
+  }
+  #warningBox i {
+    font-size: 18px;
+    color: #BA7517;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  #warningBox p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #854F0B;
+    margin: 0;
+  }
+  #usernameBox {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  #usernameBox label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #854F0B;
+    margin-bottom: 6px;
+  }
+  #usernameInput {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #EF9F27;
+    background: #FFFFFF;
+    color: #412402;
+    font-size: 14px;
+  }
+  #usernameInput:focus {
+    outline: none;
+    border-color: #D85A30;
+  }
+  #usernameInput:disabled {
+    background: #F1EFE8;
+    color: #854F0B;
+    cursor: not-allowed;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div id="usernameBox">
+    <label for="usernameInput">Username</label>
+    <input type="text" id="usernameInput" placeholder="Masukkan username" />
+  </div>
+
+  <div id="reel-container">
+    <div id="fade-mask"></div>
+    <div id="center-line"></div>
+    <div class="tri-top"></div>
+    <div class="tri-bottom"></div>
+    <div id="track"></div>
+  </div>
+
+  <button id="spinBtn"><i class="ti ti-player-play"></i> Putar</button>
+
+  <div id="resultBox"></div>
+
+  <div id="warningBox">
+    <i class="ti ti-alert-triangle"></i>
+    <p>Hasil spin ini murni acak dan tidak menjamin kemenangan. Sebagian besar putaran berakhir Zonk. Jangan jadikan ini sebagai cara mendapatkan keuntungan, dan hindari terus mencoba lagi jika hasilnya tidak sesuai harapan.</p>
+  </div>
+</div>
+
+<script>
+// GANTI link logo di bawah ini dengan link gambar logo kamu sendiri
+const logoUrl = "https://via.placeholder.com/32/EF9F27/FFFFFF?text=L";
+
+const prizes = [
+  { name: "Zonk", pct: 70, bg: "#F1EFE8", text: "#5F5E5A" },
+  { name: "10R",  pct: 20, bg: "#FAEEDA", text: "#854F0B" },
+  { name: "50R",  pct: 8,  bg: "#FAC775", text: "#412402" },
+  { name: "100R", pct: 2,  bg: "#EF9F27", text: "#412402" }
+];
+
+const ITEM_W = 88;
+const GAP = 10;
+const STEP = ITEM_W + GAP;
+
+const track = document.getElementById('track');
+const reelContainer = document.getElementById('reel-container');
+
+function makeItem(p) {
+  const el = document.createElement('div');
+  el.className = 'item';
+  el.style.background = p.bg;
+  el.innerHTML = `<img src="${logoUrl}" alt="" /><span style="color:${p.text}">${p.name}</span>`;
+  return el;
+}
+
+function pickPrizeIndex() {
+  const r = Math.random() * 100;
+  let acc = 0;
+  for (let i = 0; i < prizes.length; i++) {
+    acc += prizes[i].pct;
+    if (r <= acc) return i;
+  }
+  return prizes.length - 1;
+}
+
+function buildReel(winIndex) {
+  track.innerHTML = '';
+  track.style.transition = 'none';
+  track.style.transform = 'translateX(0px)';
+  const totalItems = 40;
+  const winPos = totalItems - 6;
+  for (let i = 0; i < totalItems; i++) {
+    const idx = (i === winPos) ? winIndex : pickPrizeIndex();
+    track.appendChild(makeItem(prizes[idx]));
+  }
+  return winPos;
+}
+
+let hasSpun = false; // sudah pernah spin atau belum, sekali saja seumur halaman
+buildReel(pickPrizeIndex());
+
+document.getElementById('spinBtn').addEventListener('click', () => {
+  if (hasSpun) return;
+  hasSpun = true;
+  document.getElementById('usernameInput').disabled = true; // username terkunci begitu spin dimulai
+  document.getElementById('resultBox').textContent = '';
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true; // terkunci permanen, tidak dibuka lagi setelah animasi selesai
+
+  // undi hasil dulu sesuai persentase
+  const winIndex = pickPrizeIndex();
+  const winPos = buildReel(winIndex);
+
+  // pakai clientWidth (tanpa border) + tanpa jitter acak biar posisi berhenti presisi di tengah
+  const containerWidth = reelContainer.clientWidth;
+  const centerOffset = containerWidth / 2 - ITEM_W / 2;
+  const targetX = -(winPos * STEP) + centerOffset;
+
+  void track.offsetHeight;
+  track.style.transition = 'transform 3400ms cubic-bezier(0.12, 0.72, 0.15, 1)';
+  track.style.transform = `translateX(${targetX}px)`;
+
+  setTimeout(() => {
+    document.getElementById('resultBox').textContent = 'Hasil: ' + prizes[winIndex].name;
+  }, 3450);
+});
+</script>
+
+</body>
+</html>
