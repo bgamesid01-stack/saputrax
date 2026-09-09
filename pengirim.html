@@ -2,24 +2,94 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>HTML 1 - Pengirim Komentar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tidak Dapat Diakses</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; }
-        .btn-github { 
-            display: inline-block; padding: 12px 24px; 
-            background: #2ea44f; color: white; text-decoration: none; 
-            border-radius: 6px; font-weight: bold; font-size: 16px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .btn-github:hover { background: #2c974b; }
+        body {
+            background: #ffffff;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #111111;
+            font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Ikon bentuk garis-garis */
+        .ikon-garis {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .garis {
+            position: absolute;
+            background-color: #222222;
+            border-radius: 2px;
+        }
+        /* Garis mata kiri */
+        .garis-1 {
+            width: 12px;
+            height: 3px;
+            top: 22px;
+            left: 12px;
+            transform: rotate(15deg);
+        }
+        /* Garis mata kanan */
+        .garis-2 {
+            width: 12px;
+            height: 3px;
+            top: 22px;
+            right: 12px;
+            transform: rotate(-15deg);
+        }
+        /* Garis mulut bingung */
+        .garis-3 {
+            width: 32px;
+            height: 3px;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%) rotate(10deg);
+        }
+        /* Garis pinggir lingkaran */
+        .bingkai {
+            width: 64px;
+            height: 64px;
+            border: 3px solid #222222;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .teks {
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+            text-align: center;
+            line-height: 1.8;
+            color: #222222;
+            max-width: 480px;
+            padding: 0 24px;
+        }
     </style>
 </head>
 <body>
-    <h2>HTML 1: Tulis Komentar</h2>
-    <p>Klik tombol di bawah ini untuk menulis komentar yang akan ditampilkan di HTML 2:</p>
-    
-    <!-- Link langsung ke Issue #1 milikmu -->
-    <a href="https://github.com/bgamesid01-stack/saputrax/issues/1" target="_blank" class="btn-github">
-        ✍️ Tulis Komentar di GitHub
-    </a>
+    <!-- Ikon garis-garis pengganti emoji -->
+    <div class="ikon-garis">
+        <div class="bingkai"></div>
+        <div class="garis garis-1"></div>
+        <div class="garis garis-2"></div>
+        <div class="garis garis-3"></div>
+    </div>
+
+    <div class="teks">Maaf, website ini tidak dapat diakses lagi</div>
 </body>
 </html>
