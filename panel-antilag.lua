@@ -201,21 +201,40 @@ CloseStroke.Thickness = 1
 CloseStroke.Parent = CloseButton
 
 -- =========================================================
--- CONTENT
+-- CONTENT (Scrolling Frame untuk tombol fitur)
 -- =========================================================
 
-local Content = Instance.new("Frame")
+local Content = Instance.new("ScrollingFrame")
 Content.Name = "FeatureContainer"
 Content.Size = UDim2.new(1, -28, 0, 190)
 Content.Position = UDim2.fromOffset(14, 76)
 Content.BackgroundTransparency = 1
+Content.BorderSizePixel = 0
+Content.ScrollBarThickness = 4
+Content.ScrollBarImageColor3 = COLORS.Accent
+Content.ScrollBarImageTransparency = 0.25
+Content.CanvasSize = UDim2.new(0, 0, 0, 0)
+Content.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Content.ScrollingDirection = Enum.ScrollingDirection.Y
+Content.ElasticBehavior = Enum.ElasticBehavior.Always
+Content.ScrollingEnabled = true
+Content.ClipsDescendants = true
 Content.ZIndex = 6
 Content.Parent = MainFrame
 
 local Layout = Instance.new("UIListLayout")
 Layout.Padding = UDim.new(0, 9)
 Layout.SortOrder = Enum.SortOrder.LayoutOrder
+Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 Layout.Parent = Content
+
+-- Update canvas size secara manual agar scrolling lebih stabil
+local function updateCanvasSize()
+    local contentHeight = Layout.AbsoluteContentSize.Y + 8
+    Content.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+end
+
+Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
 
 -- =========================================================
 -- STATUS
@@ -302,6 +321,8 @@ end
 -- CREATE FEATURE BUTTON
 -- =========================================================
 
+local buttonOrder = 0
+
 local function createButton(buttonId, text, githubUrl, featureName, icon)
     local Button = Instance.new("TextButton")
     Button.Name = buttonId
@@ -311,7 +332,8 @@ local function createButton(buttonId, text, githubUrl, featureName, icon)
     Button.BorderSizePixel = 0
     Button.Text = ""
     Button.AutoButtonColor = false
-    Button.LayoutOrder = #Content:GetChildren() + 1
+    buttonOrder = buttonOrder + 1
+    Button.LayoutOrder = buttonOrder
     Button.ZIndex = 7
     Button.Parent = Content
 
@@ -426,11 +448,17 @@ createButton(
     "Hapus Decal",
     "✦"
 )
+
+-- Pastikan canvas size ter-update setelah semua tombol dibuat
+task.defer(updateCanvasSize)
+
 -- =========================================================
 -- OPEN / CLOSE SYSTEM
 -- =========================================================
 
 local panelOpen = true
+MainFrame.Visible = true
+OpenButton.Visible = false
 
 local function openPanel()
     if panelOpen then return end
