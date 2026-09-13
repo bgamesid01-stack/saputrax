@@ -50,6 +50,7 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "YNexusAntiLag"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.DisplayOrder = 100
 ScreenGui.Parent = PlayerGui
 
 -- =========================================================
