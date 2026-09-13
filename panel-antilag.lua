@@ -17,6 +17,7 @@ local GitHubLinks = {
     HapusBayangan = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusbayangan.lua",
     UbahTexture   = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/textureplastic.lua",
     HapusPartikel = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapuspartikel.lua"
+    HapusDecal = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusdecal.lua"
 }
 
 local COLORS = {
@@ -70,7 +71,7 @@ OpenButton.TextSize = 21
 OpenButton.Font = Enum.Font.GothamBold
 OpenButton.AutoButtonColor = false
 OpenButton.Visible = false
-OpenButton.ZIndex = 20
+OpenButton.ZIndex = 999
 OpenButton.Parent = ScreenGui
 
 local OpenCorner = Instance.new("UICorner")
@@ -417,6 +418,13 @@ createButton(
     "✦"
 )
 
+createButton(
+    "RemoveDecalButton",
+    "Hapus Decal",
+    GitHubLinks.HapusDecal,
+    "Hapus Decal",
+    "✦"
+)
 -- =========================================================
 -- OPEN / CLOSE SYSTEM
 -- =========================================================
