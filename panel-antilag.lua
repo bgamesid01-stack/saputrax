@@ -16,7 +16,7 @@ local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 local GitHubLinks = {
     HapusBayangan = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusbayangan.lua",
     UbahTexture   = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/textureplastic.lua",
-    HapusPartikel = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapuspartikel.lua"
+    HapusPartikel = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapuspartikel.lua",
     HapusDecal = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusdecal.lua"
 }
 
