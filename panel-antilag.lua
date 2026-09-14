@@ -17,7 +17,8 @@ local GitHubLinks = {
     HapusBayangan = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusbayangan.lua",
     UbahTexture   = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/textureplastic.lua",
     HapusPartikel = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapuspartikel.lua",
-    HapusDecal = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusdecal.lua"
+    HapusDecal = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusdecal.lua",
+    Rendering = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/rendering.lua"
 }
 
 local COLORS = {
@@ -446,6 +447,14 @@ createButton(
     "Hapus Decal",
     GitHubLinks.HapusDecal,
     "Hapus Decal",
+    "✦"
+)
+
+createButton(
+    "RenderingButton",
+    "Rendering",
+    GitHubLinks.Rendering,
+    "Rendering",
     "✦"
 )
 
