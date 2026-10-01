@@ -1,540 +1,593 @@
--- =========================================================
--- Y-NEXUS • ANTI LAG PANEL
--- Professional UI + Close/Open button with stable IDs
--- =========================================================
+--[[
+    SCRIPT HUB - Modern Universal Script Loader
+    Single LocalScript - Creates entire GUI automatically
+    Compatible with Roblox Studio (HttpService ON) & most executors
+]]
 
+--============================================================
+-- KONFIGURASI SCRIPT (EDIT BAGIAN INI SAJA)
+--============================================================
+local Scripts = {
+	{
+		Name = "SCRIPT ONE",
+		Description = "Basic utility script",
+		URL = "https://raw.githubusercontent.com/example/script1.lua"
+	},
+	{
+		Name = "SCRIPT TWO",
+		Description = "Advanced features",
+		URL = "https://raw.githubusercontent.com/example/script2.lua"
+	},
+	{
+		Name = "SCRIPT THREE",
+		Description = "ESP & visuals",
+		URL = "https://raw.githubusercontent.com/example/script3.lua"
+	},
+	{
+		Name = "SCRIPT FOUR",
+		Description = "Misc tools",
+		URL = "https://raw.githubusercontent.com/example/script4.lua"
+	},
+}
+
+--============================================================
+-- SERVICES & VARIABLES
+--============================================================
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
 
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- =========================================================
--- CONFIG
--- =========================================================
+-- Cleanup previous instance
+local existing = PlayerGui:FindFirstChild("ScriptHub")
+if existing then existing:Destroy() end
 
-local GitHubLinks = {
-    HapusBayangan = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusbayangan.lua",
-    UbahTexture   = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/textureplastic.lua",
-    HapusPartikel = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapuspartikel.lua",
-    HapusDecal = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusdecal.lua",
-    Rendering = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/rendering.lua"
+--============================================================
+-- THEME
+--============================================================
+local Theme = {
+	Background = Color3.fromRGB(18, 18, 22),
+	Secondary = Color3.fromRGB(28, 28, 34),
+	Accent = Color3.fromRGB(0, 170, 255),       -- Neon Blue
+	AccentHover = Color3.fromRGB(0, 200, 255),
+	Text = Color3.fromRGB(240, 240, 245),
+	TextDim = Color3.fromRGB(160, 160, 170),
+	Success = Color3.fromRGB(50, 220, 120),
+	Error = Color3.fromRGB(255, 70, 70),
+	Stroke = Color3.fromRGB(50, 50, 60),
 }
 
-local COLORS = {
-    Background = Color3.fromRGB(15, 17, 23),
-    Surface = Color3.fromRGB(23, 26, 34),
-    Surface2 = Color3.fromRGB(30, 34, 44),
-    Stroke = Color3.fromRGB(57, 64, 80),
-    Text = Color3.fromRGB(242, 244, 248),
-    Muted = Color3.fromRGB(155, 163, 178),
-    Accent = Color3.fromRGB(91, 139, 255),
-    AccentDark = Color3.fromRGB(63, 101, 205),
-    Success = Color3.fromRGB(76, 210, 125),
-    Warning = Color3.fromRGB(255, 193, 76),
-    Error = Color3.fromRGB(255, 91, 91)
-}
-
-local TWEEN_FAST = TweenInfo.new(0.16, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-local TWEEN_NORMAL = TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
-
--- =========================================================
--- SCREEN GUI
--- =========================================================
-
-local oldGui = PlayerGui:FindFirstChild("YNexusAntiLag")
-if oldGui then
-    oldGui:Destroy()
+--============================================================
+-- UTILITY
+--============================================================
+local function Create(class, props)
+	local obj = Instance.new(class)
+	for k, v in pairs(props) do
+		obj[k] = v
+	end
+	return obj
 end
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "YNexusAntiLag"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGui.DisplayOrder = 100
-ScreenGui.Parent = PlayerGui
+local function Tween(obj, props, duration, style, dir)
+	local t = TweenService:Create(obj, TweenInfo.new(duration or 0.25, style or Enum.EasingStyle.Quad, dir or Enum.EasingDirection.Out), props)
+	t:Play()
+	return t
+end
 
--- =========================================================
--- OPEN BUTTON
--- ID / NAME: OpenAntiLagButton
--- Tombol ini tetap terlihat ketika panel ditutup.
--- =========================================================
+--============================================================
+-- MAIN GUI
+--============================================================
+local ScreenGui = Create("ScreenGui", {
+	Name = "ScriptHub",
+	ResetOnSpawn = false,
+	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+	Parent = PlayerGui
+})
 
-local OpenButton = Instance.new("TextButton")
-OpenButton.Name = "OpenAntiLagButton"
-OpenButton:SetAttribute("ButtonID", "OPEN_ANTI_LAG")
-OpenButton.Size = UDim2.fromOffset(52, 52)
-OpenButton.Position = UDim2.new(0, 18, 0.5, -26)
-OpenButton.BackgroundColor3 = COLORS.Surface
-OpenButton.BorderSizePixel = 0
-OpenButton.Text = "Y"
-OpenButton.TextColor3 = COLORS.Text
-OpenButton.TextSize = 21
-OpenButton.Font = Enum.Font.GothamBold
-OpenButton.AutoButtonColor = false
-OpenButton.Visible = false
-OpenButton.ZIndex = 999
-OpenButton.Parent = ScreenGui
+-- Main Frame
+local MainFrame = Create("Frame", {
+	Name = "Main",
+	Size = UDim2.new(0, 340, 0, 420),
+	Position = UDim2.new(0.5, -170, 0.5, -210),
+	BackgroundColor3 = Theme.Background,
+	BorderSizePixel = 0,
+	ClipsDescendants = true,
+	Parent = ScreenGui
+})
 
-local OpenCorner = Instance.new("UICorner")
-OpenCorner.CornerRadius = UDim.new(0, 14)
-OpenCorner.Parent = OpenButton
+Create("UICorner", {CornerRadius = UDim.new(0, 14), Parent = MainFrame})
+Create("UIStroke", {Color = Theme.Stroke, Thickness = 1.5, Transparency = 0.3, Parent = MainFrame})
 
-local OpenStroke = Instance.new("UIStroke")
-OpenStroke.Color = COLORS.Accent
-OpenStroke.Thickness = 1.5
-OpenStroke.Transparency = 0.15
-OpenStroke.Parent = OpenButton
+-- Soft shadow-like effect
+local Shadow = Create("ImageLabel", {
+	Name = "Shadow",
+	Size = UDim2.new(1, 40, 1, 40),
+	Position = UDim2.new(0, -20, 0, -20),
+	BackgroundTransparency = 1,
+	Image = "rbxassetid://6014261993",
+	ImageColor3 = Color3.new(0, 0, 0),
+	ImageTransparency = 0.6,
+	ScaleType = Enum.ScaleType.Slice,
+	SliceCenter = Rect.new(49, 49, 450, 450),
+	ZIndex = 0,
+	Parent = MainFrame
+})
 
--- =========================================================
--- MAIN PANEL
--- =========================================================
-
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainAntiLagPanel"
-MainFrame:SetAttribute("PanelID", "MAIN_ANTI_LAG_PANEL")
-MainFrame.Size = UDim2.fromOffset(350, 330)
-MainFrame.Position = UDim2.new(0.5, -175, 0.5, -165)
-MainFrame.BackgroundColor3 = COLORS.Background
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true
-MainFrame.ZIndex = 5
-MainFrame.Parent = ScreenGui
-
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 16)
-MainCorner.Parent = MainFrame
-
-local MainStroke = Instance.new("UIStroke")
-MainStroke.Color = COLORS.Stroke
-MainStroke.Thickness = 1.2
-MainStroke.Transparency = 0.15
-MainStroke.Parent = MainFrame
-
--- =========================================================
+--============================================================
 -- HEADER
--- =========================================================
+--============================================================
+local Header = Create("Frame", {
+	Name = "Header",
+	Size = UDim2.new(1, 0, 0, 70),
+	BackgroundColor3 = Theme.Secondary,
+	BorderSizePixel = 0,
+	Parent = MainFrame
+})
+Create("UICorner", {CornerRadius = UDim.new(0, 14), Parent = Header})
 
-local Header = Instance.new("Frame")
-Header.Name = "Header"
-Header.Size = UDim2.new(1, 0, 0, 62)
-Header.BackgroundColor3 = COLORS.Surface
-Header.BorderSizePixel = 0
-Header.ZIndex = 6
-Header.Parent = MainFrame
+-- Fix bottom corners of header
+local HeaderFix = Create("Frame", {
+	Size = UDim2.new(1, 0, 0, 20),
+	Position = UDim2.new(0, 0, 1, -20),
+	BackgroundColor3 = Theme.Secondary,
+	BorderSizePixel = 0,
+	Parent = Header
+})
 
-local HeaderCorner = Instance.new("UICorner")
-HeaderCorner.CornerRadius = UDim.new(0, 16)
-HeaderCorner.Parent = Header
+local Title = Create("TextLabel", {
+	Name = "Title",
+	Size = UDim2.new(1, -80, 0, 28),
+	Position = UDim2.new(0, 16, 0, 10),
+	BackgroundTransparency = 1,
+	Text = "SCRIPT HUB",
+	TextColor3 = Theme.Text,
+	TextSize = 20,
+	Font = Enum.Font.GothamBold,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	Parent = Header
+})
 
-local HeaderFix = Instance.new("Frame")
-HeaderFix.Name = "HeaderBottomFix"
-HeaderFix.Size = UDim2.new(1, 0, 0, 18)
-HeaderFix.Position = UDim2.new(0, 0, 1, -18)
-HeaderFix.BackgroundColor3 = COLORS.Surface
-HeaderFix.BorderSizePixel = 0
-HeaderFix.ZIndex = 6
-HeaderFix.Parent = Header
+local Subtitle = Create("TextLabel", {
+	Name = "Subtitle",
+	Size = UDim2.new(1, -80, 0, 18),
+	Position = UDim2.new(0, 16, 0, 36),
+	BackgroundTransparency = 1,
+	Text = "Universal Script Loader",
+	TextColor3 = Theme.TextDim,
+	TextSize = 13,
+	Font = Enum.Font.Gotham,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	Parent = Header
+})
 
-local AccentLine = Instance.new("Frame")
-AccentLine.Name = "AccentLine"
-AccentLine.Size = UDim2.new(1, 0, 0, 2)
-AccentLine.Position = UDim2.new(0, 0, 1, -2)
-AccentLine.BackgroundColor3 = COLORS.Accent
-AccentLine.BorderSizePixel = 0
-AccentLine.ZIndex = 7
-AccentLine.Parent = Header
+-- Close Button
+local CloseBtn = Create("TextButton", {
+	Name = "Close",
+	Size = UDim2.new(0, 28, 0, 28),
+	Position = UDim2.new(1, -40, 0, 12),
+	BackgroundColor3 = Color3.fromRGB(40, 40, 48),
+	Text = "×",
+	TextColor3 = Theme.Text,
+	TextSize = 20,
+	Font = Enum.Font.GothamBold,
+	BorderSizePixel = 0,
+	Parent = Header
+})
+Create("UICorner", {CornerRadius = UDim.new(0, 8), Parent = CloseBtn})
 
-local Title = Instance.new("TextLabel")
-Title.Name = "Title"
-Title.Size = UDim2.new(1, -80, 0, 25)
-Title.Position = UDim2.fromOffset(16, 9)
-Title.BackgroundTransparency = 1
-Title.Text = "Y-NEXUS"
-Title.TextColor3 = COLORS.Text
-Title.TextSize = 17
-Title.Font = Enum.Font.GothamBold
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.ZIndex = 7
-Title.Parent = Header
+-- Minimize Button
+local MinBtn = Create("TextButton", {
+	Name = "Minimize",
+	Size = UDim2.new(0, 28, 0, 28),
+	Position = UDim2.new(1, -74, 0, 12),
+	BackgroundColor3 = Color3.fromRGB(40, 40, 48),
+	Text = "–",
+	TextColor3 = Theme.Text,
+	TextSize = 18,
+	Font = Enum.Font.GothamBold,
+	BorderSizePixel = 0,
+	Parent = Header
+})
+Create("UICorner", {CornerRadius = UDim.new(0, 8), Parent = MinBtn})
 
-local Subtitle = Instance.new("TextLabel")
-Subtitle.Name = "Subtitle"
-Subtitle.Size = UDim2.new(1, -80, 0, 18)
-Subtitle.Position = UDim2.fromOffset(16, 32)
-Subtitle.BackgroundTransparency = 1
-Subtitle.Text = "ANTI-LAG  •  MULTI FEATURE"
-Subtitle.TextColor3 = COLORS.Muted
-Subtitle.TextSize = 9
-Subtitle.Font = Enum.Font.GothamMedium
-Subtitle.TextXAlignment = Enum.TextXAlignment.Left
-Subtitle.ZIndex = 7
-Subtitle.Parent = Header
+--============================================================
+-- STATUS BAR
+--============================================================
+local StatusBar = Create("Frame", {
+	Name = "StatusBar",
+	Size = UDim2.new(1, -24, 0, 28),
+	Position = UDim2.new(0, 12, 0, 78),
+	BackgroundColor3 = Theme.Secondary,
+	BorderSizePixel = 0,
+	Parent = MainFrame
+})
+Create("UICorner", {CornerRadius = UDim.new(0, 8), Parent = StatusBar})
 
--- =========================================================
--- CLOSE BUTTON
--- ID / NAME: CloseAntiLagButton
--- =========================================================
+local StatusLabel = Create("TextLabel", {
+	Name = "Status",
+	Size = UDim2.new(1, -16, 1, 0),
+	Position = UDim2.new(0, 12, 0, 0),
+	BackgroundTransparency = 1,
+	Text = "Status: Ready",
+	TextColor3 = Theme.TextDim,
+	TextSize = 13,
+	Font = Enum.Font.GothamMedium,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	Parent = StatusBar
+})
 
-local CloseButton = Instance.new("TextButton")
-CloseButton.Name = "CloseAntiLagButton"
-CloseButton:SetAttribute("ButtonID", "CLOSE_ANTI_LAG")
-CloseButton.Size = UDim2.fromOffset(34, 34)
-CloseButton.Position = UDim2.new(1, -46, 0, 14)
-CloseButton.BackgroundColor3 = COLORS.Surface2
-CloseButton.BorderSizePixel = 0
-CloseButton.Text = "×"
-CloseButton.TextColor3 = COLORS.Muted
-CloseButton.TextSize = 22
-CloseButton.Font = Enum.Font.GothamMedium
-CloseButton.AutoButtonColor = false
-CloseButton.ZIndex = 8
-CloseButton.Parent = Header
-
-local CloseCorner = Instance.new("UICorner")
-CloseCorner.CornerRadius = UDim.new(0, 10)
-CloseCorner.Parent = CloseButton
-
-local CloseStroke = Instance.new("UIStroke")
-CloseStroke.Color = COLORS.Stroke
-CloseStroke.Thickness = 1
-CloseStroke.Parent = CloseButton
-
--- =========================================================
--- CONTENT (Scrolling Frame untuk tombol fitur)
--- =========================================================
-
-local Content = Instance.new("ScrollingFrame")
-Content.Name = "FeatureContainer"
-Content.Size = UDim2.new(1, -28, 0, 190)
-Content.Position = UDim2.fromOffset(14, 76)
-Content.BackgroundTransparency = 1
-Content.BorderSizePixel = 0
-Content.ScrollBarThickness = 4
-Content.ScrollBarImageColor3 = COLORS.Accent
-Content.ScrollBarImageTransparency = 0.25
-Content.CanvasSize = UDim2.new(0, 0, 0, 0)
-Content.AutomaticCanvasSize = Enum.AutomaticSize.Y
-Content.ScrollingDirection = Enum.ScrollingDirection.Y
-Content.ElasticBehavior = Enum.ElasticBehavior.Always
-Content.ScrollingEnabled = true
-Content.ClipsDescendants = true
-Content.ZIndex = 6
-Content.Parent = MainFrame
-
-local Layout = Instance.new("UIListLayout")
-Layout.Padding = UDim.new(0, 9)
-Layout.SortOrder = Enum.SortOrder.LayoutOrder
-Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-Layout.Parent = Content
-
--- Update canvas size secara manual agar scrolling lebih stabil
-local function updateCanvasSize()
-    local contentHeight = Layout.AbsoluteContentSize.Y + 8
-    Content.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+local function SetStatus(text, color)
+	StatusLabel.Text = "Status: " .. text
+	StatusLabel.TextColor3 = color or Theme.TextDim
 end
 
-Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
+--============================================================
+-- SCROLLING LIST
+--============================================================
+local Scroll = Create("ScrollingFrame", {
+	Name = "ScriptList",
+	Size = UDim2.new(1, -24, 1, -170),
+	Position = UDim2.new(0, 12, 0, 116),
+	BackgroundTransparency = 1,
+	BorderSizePixel = 0,
+	ScrollBarThickness = 4,
+	ScrollBarImageColor3 = Theme.Accent,
+	CanvasSize = UDim2.new(0, 0, 0, 0),
+	AutomaticCanvasSize = Enum.AutomaticSize.Y,
+	Parent = MainFrame
+})
 
--- =========================================================
--- STATUS
--- =========================================================
+local ListLayout = Create("UIListLayout", {
+	Padding = UDim.new(0, 10),
+	SortOrder = Enum.SortOrder.LayoutOrder,
+	Parent = Scroll
+})
 
-local StatusBox = Instance.new("Frame")
-StatusBox.Name = "StatusBox"
-StatusBox.Size = UDim2.new(1, -28, 0, 45)
-StatusBox.Position = UDim2.new(0, 14, 1, -59)
-StatusBox.BackgroundColor3 = COLORS.Surface
-StatusBox.BorderSizePixel = 0
-StatusBox.ZIndex = 6
-StatusBox.Parent = MainFrame
+Create("UIPadding", {
+	PaddingTop = UDim.new(0, 4),
+	PaddingBottom = UDim.new(0, 4),
+	Parent = Scroll
+})
 
-local StatusCorner = Instance.new("UICorner")
-StatusCorner.CornerRadius = UDim.new(0, 10)
-StatusCorner.Parent = StatusBox
+--============================================================
+-- NOTIFICATION SYSTEM
+--============================================================
+local NotifContainer = Create("Frame", {
+	Name = "Notifications",
+	Size = UDim2.new(0, 280, 1, 0),
+	Position = UDim2.new(1, -300, 0, 20),
+	BackgroundTransparency = 1,
+	Parent = ScreenGui
+})
 
-local StatusIndicator = Instance.new("Frame")
-StatusIndicator.Name = "StatusIndicator"
-StatusIndicator.Size = UDim2.fromOffset(5, 25)
-StatusIndicator.Position = UDim2.fromOffset(10, 10)
-StatusIndicator.BackgroundColor3 = COLORS.Accent
-StatusIndicator.BorderSizePixel = 0
-StatusIndicator.ZIndex = 7
-StatusIndicator.Parent = StatusBox
+local NotifLayout = Create("UIListLayout", {
+	Padding = UDim.new(0, 8),
+	VerticalAlignment = Enum.VerticalAlignment.Top,
+	Parent = NotifContainer
+})
 
-local IndicatorCorner = Instance.new("UICorner")
-IndicatorCorner.CornerRadius = UDim.new(1, 0)
-IndicatorCorner.Parent = StatusIndicator
+local function Notify(message, isSuccess)
+	local notif = Create("Frame", {
+		Size = UDim2.new(1, 0, 0, 48),
+		BackgroundColor3 = Theme.Secondary,
+		BorderSizePixel = 0,
+		Parent = NotifContainer
+	})
+	Create("UICorner", {CornerRadius = UDim.new(0, 10), Parent = notif})
+	Create("UIStroke", {
+		Color = isSuccess and Theme.Success or Theme.Error,
+		Thickness = 1.5,
+		Parent = notif
+	})
 
-local StatusLabel = Instance.new("TextLabel")
-StatusLabel.Name = "StatusLabel"
-StatusLabel.Size = UDim2.new(1, -30, 1, 0)
-StatusLabel.Position = UDim2.fromOffset(23, 0)
-StatusLabel.BackgroundTransparency = 1
-StatusLabel.Text = "Pilih fitur untuk mengoptimalkan tampilan."
-StatusLabel.TextColor3 = COLORS.Muted
-StatusLabel.TextSize = 10
-StatusLabel.Font = Enum.Font.Gotham
-StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
-StatusLabel.ZIndex = 7
-StatusLabel.Parent = StatusBox
+	local icon = Create("TextLabel", {
+		Size = UDim2.new(0, 30, 1, 0),
+		Position = UDim2.new(0, 8, 0, 0),
+		BackgroundTransparency = 1,
+		Text = isSuccess and "✓" or "✕",
+		TextColor3 = isSuccess and Theme.Success or Theme.Error,
+		TextSize = 18,
+		Font = Enum.Font.GothamBold,
+		Parent = notif
+	})
 
--- =========================================================
--- RUN GITHUB SCRIPT
--- =========================================================
+	local msg = Create("TextLabel", {
+		Size = UDim2.new(1, -50, 1, 0),
+		Position = UDim2.new(0, 40, 0, 0),
+		BackgroundTransparency = 1,
+		Text = message,
+		TextColor3 = Theme.Text,
+		TextSize = 13,
+		Font = Enum.Font.Gotham,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextWrapped = true,
+		Parent = notif
+	})
 
-local function setStatus(text, color)
-    StatusLabel.Text = text
-    StatusLabel.TextColor3 = color
-    StatusIndicator.BackgroundColor3 = color
+	notif.Position = UDim2.new(1, 20, 0, 0)
+	Tween(notif, {Position = UDim2.new(0, 0, 0, 0)}, 0.35, Enum.EasingStyle.Back)
+
+	task.delay(3.2, function()
+		local tw = Tween(notif, {Position = UDim2.new(1, 40, 0, 0), BackgroundTransparency = 1}, 0.3)
+		tw.Completed:Wait()
+		notif:Destroy()
+	end)
 end
 
-local function runGithubScript(url, featureName)
-    setStatus("Memuat • " .. featureName, COLORS.Warning)
+--============================================================
+-- LOADER FUNCTION
+--============================================================
+local loadingFlags = {} -- anti double click
 
-    local success, content = pcall(function()
-        return game:HttpGet(url)
-    end)
+local function LoadScript(scriptData, button)
+	if loadingFlags[scriptData.Name] then return end
+	loadingFlags[scriptData.Name] = true
 
-    if not success then
-        setStatus("Gagal mengunduh • " .. featureName, COLORS.Error)
-        return
-    end
+	button.Active = false
+	SetStatus("Loading " .. scriptData.Name .. "...", Theme.Accent)
 
-    local loadedScript, err = loadstring(content)
+	local success, result = pcall(function()
+		-- Prefer executor-style if available
+		if syn and syn.request then
+			local response = syn.request({Url = scriptData.URL, Method = "GET"})
+			if response.StatusCode == 200 then
+				return loadstring(response.Body)()
+			else
+				error("HTTP " .. tostring(response.StatusCode))
+			end
+		elseif http and http.request then
+			local response = http.request({Url = scriptData.URL, Method = "GET"})
+			return loadstring(response.Body)()
+		elseif request then
+			local response = request({Url = scriptData.URL, Method = "GET"})
+			return loadstring(response.Body)()
+		else
+			-- Standard Roblox / Studio path
+			local code = HttpService:GetAsync(scriptData.URL)
+			return loadstring(code)()
+		end
+	end)
 
-    if not loadedScript then
-        setStatus("Error script • " .. tostring(err), COLORS.Error)
-        return
-    end
+	if success then
+		SetStatus("Loaded Successfully", Theme.Success)
+		Notify("✓ " .. scriptData.Name .. " berhasil dimuat", true)
+	else
+		SetStatus("Failed to Load", Theme.Error)
+		local errMsg = tostring(result)
+		if #errMsg > 60 then errMsg = errMsg:sub(1, 57) .. "..." end
+		Notify("✕ Gagal: " .. errMsg, false)
+		warn("[ScriptHub] Load error for", scriptData.Name, ":", result)
+	end
 
-    local executed, executeError = pcall(loadedScript)
+	button.Active = true
+	loadingFlags[scriptData.Name] = false
 
-    if executed then
-        setStatus("Berhasil • " .. featureName, COLORS.Success)
-    else
-        setStatus("Error saat menjalankan • " .. tostring(executeError), COLORS.Error)
-    end
+	task.delay(2.5, function()
+		if StatusLabel.Text:find("Loaded") or StatusLabel.Text:find("Failed") then
+			SetStatus("Ready", Theme.TextDim)
+		end
+	end)
 end
 
--- =========================================================
--- CREATE FEATURE BUTTON
--- =========================================================
+--============================================================
+-- CREATE SCRIPT CARDS
+--============================================================
+for i, data in ipairs(Scripts) do
+	local Card = Create("Frame", {
+		Name = "Card_" .. i,
+		Size = UDim2.new(1, -4, 0, 72),
+		BackgroundColor3 = Theme.Secondary,
+		BorderSizePixel = 0,
+		LayoutOrder = i,
+		Parent = Scroll
+	})
+	Create("UICorner", {CornerRadius = UDim.new(0, 10), Parent = Card})
+	Create("UIStroke", {Color = Theme.Stroke, Thickness = 1, Transparency = 0.4, Parent = Card})
 
-local buttonOrder = 0
+	local Number = Create("TextLabel", {
+		Size = UDim2.new(0, 36, 0, 20),
+		Position = UDim2.new(0, 12, 0, 10),
+		BackgroundTransparency = 1,
+		Text = string.format("%02d", i),
+		TextColor3 = Theme.Accent,
+		TextSize = 14,
+		Font = Enum.Font.GothamBold,
+		Parent = Card
+	})
 
-local function createButton(buttonId, text, githubUrl, featureName, icon)
-    local Button = Instance.new("TextButton")
-    Button.Name = buttonId
-    Button:SetAttribute("ButtonID", buttonId)
-    Button.Size = UDim2.new(1, 0, 0, 54)
-    Button.BackgroundColor3 = COLORS.Surface
-    Button.BorderSizePixel = 0
-    Button.Text = ""
-    Button.AutoButtonColor = false
-    buttonOrder = buttonOrder + 1
-    Button.LayoutOrder = buttonOrder
-    Button.ZIndex = 7
-    Button.Parent = Content
+	local NameLabel = Create("TextLabel", {
+		Size = UDim2.new(1, -120, 0, 20),
+		Position = UDim2.new(0, 48, 0, 10),
+		BackgroundTransparency = 1,
+		Text = data.Name,
+		TextColor3 = Theme.Text,
+		TextSize = 15,
+		Font = Enum.Font.GothamBold,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		Parent = Card
+	})
 
-    local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 11)
-    Corner.Parent = Button
+	local DescLabel = Create("TextLabel", {
+		Size = UDim2.new(1, -120, 0, 18),
+		Position = UDim2.new(0, 12, 0, 34),
+		BackgroundTransparency = 1,
+		Text = data.Description or "",
+		TextColor3 = Theme.TextDim,
+		TextSize = 12,
+		Font = Enum.Font.Gotham,
+		TextXAlignment = Enum.TextXAlignment.Left,
+		TextTruncate = Enum.TextTruncate.AtEnd,
+		Parent = Card
+	})
 
-    local Stroke = Instance.new("UIStroke")
-    Stroke.Color = COLORS.Stroke
-    Stroke.Thickness = 1
-    Stroke.Transparency = 0.25
-    Stroke.Parent = Button
+	local LoadBtn = Create("TextButton", {
+		Name = "Load",
+		Size = UDim2.new(0, 90, 0, 32),
+		Position = UDim2.new(1, -102, 0.5, -16),
+		BackgroundColor3 = Theme.Accent,
+		Text = "Load Script",
+		TextColor3 = Color3.new(1, 1, 1),
+		TextSize = 12,
+		Font = Enum.Font.GothamBold,
+		BorderSizePixel = 0,
+		AutoButtonColor = false,
+		Parent = Card
+	})
+	Create("UICorner", {CornerRadius = UDim.new(0, 8), Parent = LoadBtn})
 
-    local Icon = Instance.new("TextLabel")
-    Icon.Name = "Icon"
-    Icon.Size = UDim2.fromOffset(34, 34)
-    Icon.Position = UDim2.fromOffset(10, 10)
-    Icon.BackgroundColor3 = COLORS.Surface2
-    Icon.BorderSizePixel = 0
-    Icon.Text = icon
-    Icon.TextColor3 = COLORS.Text
-    Icon.TextSize = 15
-    Icon.Font = Enum.Font.GothamBold
-    Icon.ZIndex = 8
-    Icon.Parent = Button
+	-- Hover & Press effects
+	LoadBtn.MouseEnter:Connect(function()
+		Tween(LoadBtn, {BackgroundColor3 = Theme.AccentHover}, 0.15)
+	end)
+	LoadBtn.MouseLeave:Connect(function()
+		Tween(LoadBtn, {BackgroundColor3 = Theme.Accent}, 0.15)
+	end)
+	LoadBtn.MouseButton1Down:Connect(function()
+		Tween(LoadBtn, {Size = UDim2.new(0, 86, 0, 30)}, 0.08)
+	end)
+	LoadBtn.MouseButton1Up:Connect(function()
+		Tween(LoadBtn, {Size = UDim2.new(0, 90, 0, 32)}, 0.08)
+	end)
 
-    local IconCorner = Instance.new("UICorner")
-    IconCorner.CornerRadius = UDim.new(0, 9)
-    IconCorner.Parent = Icon
-
-    local NameLabel = Instance.new("TextLabel")
-    NameLabel.Name = "FeatureName"
-    NameLabel.Size = UDim2.new(1, -65, 0, 22)
-    NameLabel.Position = UDim2.fromOffset(55, 7)
-    NameLabel.BackgroundTransparency = 1
-    NameLabel.Text = text
-    NameLabel.TextColor3 = COLORS.Text
-    NameLabel.TextSize = 11
-    NameLabel.Font = Enum.Font.GothamBold
-    NameLabel.TextXAlignment = Enum.TextXAlignment.Left
-    NameLabel.ZIndex = 8
-    NameLabel.Parent = Button
-
-    local DescLabel = Instance.new("TextLabel")
-    DescLabel.Name = "Description"
-    DescLabel.Size = UDim2.new(1, -65, 0, 17)
-    DescLabel.Position = UDim2.fromOffset(55, 29)
-    DescLabel.BackgroundTransparency = 1
-    DescLabel.Text = "Aktifkan fitur ini"
-    DescLabel.TextColor3 = COLORS.Muted
-    DescLabel.TextSize = 9
-    DescLabel.Font = Enum.Font.Gotham
-    DescLabel.TextXAlignment = Enum.TextXAlignment.Left
-    DescLabel.ZIndex = 8
-    DescLabel.Parent = Button
-
-    Button.MouseEnter:Connect(function()
-        TweenService:Create(Button, TWEEN_FAST, {
-            BackgroundColor3 = COLORS.Surface2
-        }):Play()
-        TweenService:Create(Stroke, TWEEN_FAST, {
-            Color = COLORS.Accent,
-            Transparency = 0
-        }):Play()
-    end)
-
-    Button.MouseLeave:Connect(function()
-        TweenService:Create(Button, TWEEN_FAST, {
-            BackgroundColor3 = COLORS.Surface
-        }):Play()
-        TweenService:Create(Stroke, TWEEN_FAST, {
-            Color = COLORS.Stroke,
-            Transparency = 0.25
-        }):Play()
-    end)
-
-    Button.MouseButton1Click:Connect(function()
-        runGithubScript(githubUrl, featureName)
-    end)
-
-    return Button
+	LoadBtn.MouseButton1Click:Connect(function()
+		LoadScript(data, LoadBtn)
+	end)
 end
 
-createButton(
-    "RemoveShadowButton",
-    "Hapus Bayangan",
-    GitHubLinks.HapusBayangan,
-    "Hapus Bayangan",
-    "◈"
-)
+--============================================================
+-- BOTTOM BUTTONS (Refresh + Close)
+--============================================================
+local BottomBar = Create("Frame", {
+	Name = "BottomBar",
+	Size = UDim2.new(1, -24, 0, 40),
+	Position = UDim2.new(0, 12, 1, -52),
+	BackgroundTransparency = 1,
+	Parent = MainFrame
+})
 
-createButton(
-    "SmoothPlasticButton",
-    "Smooth Plastic",
-    GitHubLinks.UbahTexture,
-    "Smooth Plastic",
-    "◆"
-)
+local RefreshBtn = Create("TextButton", {
+	Name = "Refresh",
+	Size = UDim2.new(0.48, -4, 1, 0),
+	BackgroundColor3 = Theme.Secondary,
+	Text = "Refresh",
+	TextColor3 = Theme.Text,
+	TextSize = 14,
+	Font = Enum.Font.GothamMedium,
+	BorderSizePixel = 0,
+	Parent = BottomBar
+})
+Create("UICorner", {CornerRadius = UDim.new(0, 9), Parent = RefreshBtn})
+Create("UIStroke", {Color = Theme.Stroke, Thickness = 1, Transparency = 0.4, Parent = RefreshBtn})
 
-createButton(
-    "RemoveParticlesButton",
-    "Hapus Partikel & Efek",
-    GitHubLinks.HapusPartikel,
-    "Hapus Partikel & Efek",
-    "✦"
-)
+local CloseBottom = Create("TextButton", {
+	Name = "CloseBottom",
+	Size = UDim2.new(0.48, -4, 1, 0),
+	Position = UDim2.new(0.52, 4, 0, 0),
+	BackgroundColor3 = Color3.fromRGB(180, 50, 50),
+	Text = "Close",
+	TextColor3 = Color3.new(1, 1, 1),
+	TextSize = 14,
+	Font = Enum.Font.GothamMedium,
+	BorderSizePixel = 0,
+	Parent = BottomBar
+})
+Create("UICorner", {CornerRadius = UDim.new(0, 9), Parent = CloseBottom})
 
-createButton(
-    "RemoveDecalButton",
-    "Hapus Decal",
-    GitHubLinks.HapusDecal,
-    "Hapus Decal",
-    "✦"
-)
-
-createButton(
-    "RenderingButton",
-    "Rendering",
-    GitHubLinks.Rendering,
-    "Rendering",
-    "✦"
-)
-
--- Pastikan canvas size ter-update setelah semua tombol dibuat
-task.defer(updateCanvasSize)
-
--- =========================================================
--- OPEN / CLOSE SYSTEM
--- =========================================================
-
-local panelOpen = true
-MainFrame.Visible = true
-OpenButton.Visible = false
-
-local function openPanel()
-    if panelOpen then return end
-    panelOpen = true
-
-    MainFrame.Visible = true
-    MainFrame.Size = UDim2.fromOffset(330, 310)
-    MainFrame.Position = UDim2.new(0.5, -165, 0.5, -155)
-
-    TweenService:Create(MainFrame, TWEEN_NORMAL, {
-        Size = UDim2.fromOffset(350, 330),
-        Position = UDim2.new(0.5, -175, 0.5, -165)
-    }):Play()
-
-    OpenButton.Visible = false
-end
-
-local function closePanel()
-    if not panelOpen then return end
-    panelOpen = false
-
-    local tween = TweenService:Create(MainFrame, TWEEN_NORMAL, {
-        Size = UDim2.fromOffset(0, 0)
-    })
-
-    tween:Play()
-    tween.Completed:Connect(function()
-        if not panelOpen then
-            MainFrame.Visible = false
-            OpenButton.Visible = true
-        end
-    end)
-end
-
-CloseButton.MouseEnter:Connect(function()
-    TweenService:Create(CloseButton, TWEEN_FAST, {
-        BackgroundColor3 = COLORS.Error,
-        TextColor3 = Color3.fromRGB(255, 255, 255)
-    }):Play()
+RefreshBtn.MouseButton1Click:Connect(function()
+	SetStatus("Ready", Theme.TextDim)
+	Notify("List refreshed", true)
 end)
 
-CloseButton.MouseLeave:Connect(function()
-    TweenService:Create(CloseButton, TWEEN_FAST, {
-        BackgroundColor3 = COLORS.Surface2,
-        TextColor3 = COLORS.Muted
-    }):Play()
+--============================================================
+-- CLOSE / MINIMIZE LOGIC
+--============================================================
+local isMinimized = false
+local originalSize = MainFrame.Size
+
+local function CloseHub()
+	Tween(MainFrame, {
+		Size = UDim2.new(0, 0, 0, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0)
+	}, 0.25, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+	task.wait(0.28)
+	ScreenGui:Destroy()
+end
+
+CloseBtn.MouseButton1Click:Connect(CloseHub)
+CloseBottom.MouseButton1Click:Connect(CloseHub)
+
+MinBtn.MouseButton1Click:Connect(function()
+	isMinimized = not isMinimized
+	if isMinimized then
+		Tween(MainFrame, {Size = UDim2.new(0, 340, 0, 70)}, 0.3)
+		Scroll.Visible = false
+		StatusBar.Visible = false
+		BottomBar.Visible = false
+		MinBtn.Text = "+"
+	else
+		Tween(MainFrame, {Size = originalSize}, 0.3)
+		Scroll.Visible = true
+		StatusBar.Visible = true
+		BottomBar.Visible = true
+		MinBtn.Text = "–"
+	end
 end)
 
-OpenButton.MouseEnter:Connect(function()
-    TweenService:Create(OpenButton, TWEEN_FAST, {
-        BackgroundColor3 = COLORS.Surface2,
-        Size = UDim2.fromOffset(56, 56)
-    }):Play()
+--============================================================
+-- DRAGGING (PC) + TOUCH FRIENDLY
+--============================================================
+local dragging, dragInput, dragStart, startPos
+
+local function Update(input)
+	local delta = input.Position - dragStart
+	MainFrame.Position = UDim2.new(
+		startPos.X.Scale,
+		startPos.X.Offset + delta.X,
+		startPos.Y.Scale,
+		startPos.Y.Offset + delta.Y
+	)
+end
+
+Header.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
 end)
 
-OpenButton.MouseLeave:Connect(function()
-    TweenService:Create(OpenButton, TWEEN_FAST, {
-        BackgroundColor3 = COLORS.Surface,
-        Size = UDim2.fromOffset(52, 52)
-    }):Play()
+Header.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
 end)
 
-CloseButton.MouseButton1Click:Connect(closePanel)
-OpenButton.MouseButton1Click:Connect(openPanel)
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		Update(input)
+	end
+end)
 
--- =========================================================
--- FINAL
--- =========================================================
+--============================================================
+-- OPEN ANIMATION
+--============================================================
+MainFrame.Size = UDim2.new(0, 0, 0, 0)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 
-setStatus("Ready • Pilih fitur yang ingin digunakan.", COLORS.Accent)
+Tween(MainFrame, {
+	Size = UDim2.new(0, 340, 0, 420),
+	Position = UDim2.new(0.5, -170, 0.5, -210)
+}, 0.4, Enum.EasingStyle.Back)
+
+print("[ScriptHub] Loaded successfully")
