@@ -1,66 +1,72 @@
--- ==============================================
---  HAPUS BAYANGAN + OPTIMASI | RINGAN & AMAN
---  Ada jeda biar gak bikin lag/berat 🧊
--- ==============================================
-
--- ⚙️ PENGATURAN — BISA DIUBAH SESUAI SELERA!
-local Settings = {
-    JedaAntarObjek = 0.1,      -- Jeda antar objek (detik) — 0.1 = 100ms, aman & ringan ✅
-    JedaUlangCek = 5,          -- Cek ulang tiap 5 detik untuk objek baru
-    HapusDiWorkspace = true,   -- Hapus bayangan di peta
-    HapusDiKarakter = true,    -- Hapus bayangan pemain
-    HapusDiAsetLain = true,    -- Hapus bayangan di model lain
-}
-
--- 🔧 FUNGSI UTAMA: HAPUS BAYANGAN
-local function HapusBayangan(objek)
-    if not objek then return end
-
-    -- Cari komponen bayangan
-    local bayangan = objek:FindFirstChildOfClass("SpotLight") or 
-                     objek:FindFirstChildOfClass("PointLight") or
-                     objek:FindFirstChild("Shadow") or
-                     objek:FindFirstChild("CastShadow")
-
-    -- Matikan bayangan di bagian bagian
-    if objek:IsA("BasePart") then
-        objek.CastShadow = false  -- ✅ Matikan bayangan tanpa hapus objek
-        objek.ReceiveShadow = false
-    end
+local Lighting   = game:GetService("Lighting")
+local Workspace  = game:GetService("Workspace")
+local trigger = script:WaitForChild("ToggleEvent") 
+local active        = false
+local mainThread    = nil
+local addedConn     = nil
+local originalGlobalShadows = Lighting.GlobalShadows
+local function stripShadow(obj)
+	if obj:IsA("BasePart") then
+		obj.CastShadow = false
+	end
 end
 
--- 🔄 PROSES SCAN DENGAN JEDA
-local function ProsesSemuaObjek()
-    local semuaObjek = workspace:GetDescendants()
-    local hitung = 0
-
-    for _, objek in ipairs(semuaObjek) do
-        -- Filter sesuai pengaturan
-        local namaObjek = objek.Parent and objek.Parent.Name or ""
-        
-        -- Lewati karakter pemain kalau diminta
-        if not Settings.HapusDiKarakter and namaObjek == "HumanoidRootPart" then
-            continue
-        end
-
-        -- Proses matikan bayangan
-        HapusBayangan(objek)
-
-        -- ⏰ Jeda setiap 20 objek biar gak berat!
-        hitung += 1
-        if hitung % 20 == 0 then
-            task.wait(Settings.JedaAntarObjek)
-        end
-    end
-
-    print("✅ Semua bayangan dimatikan! Total diproses:", #semuaObjek)
+local function scanAll()
+	for _, obj in ipairs(Workspace:GetDescendants()) do
+		stripShadow(obj)
+	end
 end
 
--- 🚀 MULAI PROSES PERTAMA KALI
-task.wait(1) -- Tunggu game siap dulu
-ProsesSemuaObjek()
+local function activate()
+	if active then return end
+	active = true
 
--- 🔄 CEK ULANG SECARA BERKALA (untuk objek baru yang masuk)
-while task.wait(Settings.JedaUlangCek) do
-    ProsesSemuaObjek()
+	Lighting.GlobalShadows = false
+	scanAll()
+	addedConn = Workspace.DescendantAdded:Connect(function(obj)
+		if active then
+			stripShadow(obj)
+		end
+	end)
+
+	mainThread = task.spawn(function()
+		local elapsed = 0
+		while active do
+			task.wait(0.1)
+			elapsed += 0.1
+
+			if elapsed >= 300 then
+				elapsed = 0
+				scanAll()
+			end
+		end
+	end)
+	print("[ShadowRemover] AKTIF")
 end
+
+local function deactivate()
+	if not active then return end
+	active = false
+
+	if addedConn then
+		addedConn:Disconnect()
+		addedConn = nil
+	end
+
+	if mainThread then
+		task.cancel(mainThread)
+		mainThread = nil
+	end
+
+	Lighting.GlobalShadows = originalGlobalShadows
+
+	print("[ShadowRemover] NONAKTIF")
+end
+
+trigger.Event:Connect(function()
+	if active then
+		deactivate()
+	else
+		activate()
+	end
+end)
