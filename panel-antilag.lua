@@ -1,48 +1,43 @@
---============================================================
---  SCRIPT HUB — Premium UI (Single-file Luau)
---  Dark • Minimalist • Modern • Mobile & PC friendly
---============================================================
-
---============================================================
---  1. CONFIGURATION
---============================================================
 local CONFIG = {
-    Title       = "SCRIPT HUB",
-    Subtitle    = "Universal Script Loader",
-
-    -- Fallback ModuleScript folder (dipakai kalau executor API tidak tersedia)
+    Title       = "SwiftOPT",
+    Subtitle    = "Performa Maksimal, Tanpa Beban",
     ModuleFolder = "ScriptHubModules",
-
-    ReopenIconId = "rbxassetid://94897460093839", -- JANGAN DIUBAH
+    ReopenIconId = "rbxassetid://94897460093839",
 
     Credits = {
-        Developer     = "Your Name",
-        UIDesign      = "Your Name",
-        SpecialThanks = "Your Name",
+        Developer     = "SaputraMod",
+        UIDesign      = "SaputraMod",
     },
 }
 
 local Scripts = {
     {
-        Name        = "SCRIPT ONE",
-        Description = "Short description of this script",
+        Name        = "Plastic Texture",
+        Description = "Change All Textures to Plastic",
         URL         = "https://example.com/script1.lua",
     },
     {
-        Name        = "SCRIPT TWO",
-        Description = "Short description of this script",
-        URL         = "https://example.com/script2.lua",
+        Name        = "No Shadow",
+        Description = "Eliminate All Shadows",
+        URL         = "https://raw.githubusercontent.com/bgamesid01-stack/saputrax/refs/heads/main/hapusbayangan.lua",
     },
     {
-        Name        = "SCRIPT THREE",
-        Description = "Short description of this script",
+        Name        = "No Particles",
+        Description = "Remove All Particles",
+        URL         = "https://example.com/script3.lua",
+    },
+    {
+        Name        = "Low Graphics",
+        Description = "Change the Graphics to Lower",
+        URL         = "https://example.com/script3.lua",
+    },
+    {
+        Name        = "Remove Decal",
+        Description = "Deleting All Decal",
         URL         = "https://example.com/script3.lua",
     },
 }
 
---============================================================
---  2. SERVICES
---============================================================
 local Players          = game:GetService("Players")
 local TweenService     = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
@@ -52,9 +47,6 @@ local ServerScriptService = game:GetService("ServerScriptService")
 local LocalPlayer = Players.LocalPlayer
 local PlayerGui   = LocalPlayer:WaitForChild("PlayerGui")
 
---============================================================
---  3. UTILITY FUNCTIONS
---============================================================
 local PALETTE = {
     Background = Color3.fromHex("111318"),
     Panel      = Color3.fromHex("181B22"),
@@ -105,9 +97,6 @@ local function tween(inst, duration, props, style, dir)
     return t
 end
 
---============================================================
---  4. NOTIFICATION SYSTEM
---============================================================
 local notifOrder = 0
 
 local function buildNotifHolder(parent)
@@ -204,9 +193,6 @@ local function notify(message, kind)
     end)
 end
 
---============================================================
---  5. GUI CREATION
---============================================================
 for _, g in ipairs(PlayerGui:GetChildren()) do
     if g:IsA("ScreenGui") and g.Name == "PremiumScriptHub" then
         g:Destroy()
@@ -228,9 +214,6 @@ local gui = create("ScreenGui", {
 
 notifHolder = buildNotifHolder(gui)
 
---============================================================
---  Main Panel
---============================================================
 local PANEL_W = IS_COMPACT and UDim.new(1, -24) or UDim.new(0, 620)
 local PANEL_H = IS_COMPACT and UDim.new(1, -140) or UDim.new(0, 460)
 
@@ -255,7 +238,6 @@ create("UISizeConstraint", {
 
 local uiScale = create("UIScale", {Scale = 1, Parent = main})
 
---============  HEADER  ============
 local HEADER_H = 60
 local STATUS_H = 28
 
@@ -340,7 +322,6 @@ end
 local closeBtn    = makeHeaderButton("×", -12)
 local minimizeBtn = makeHeaderButton("—", -48)
 
---============  BODY  ============
 local body = create("Frame", {
     Name = "Body",
     Size = UDim2.new(1, 0, 1, -(HEADER_H + STATUS_H)),
@@ -350,7 +331,6 @@ local body = create("Frame", {
     Parent = main,
 })
 
---============  STATUS BAR  ============
 local statusBar = create("Frame", {
     Name = "StatusBar",
     Size = UDim2.new(1, 0, 0, STATUS_H),
@@ -395,7 +375,6 @@ local function setStatus(text, color)
     tween(statusDot, 0.2, {BackgroundColor3 = color})
 end
 
---============  SCROLL  ============
 local scroll = create("ScrollingFrame", {
     Size = UDim2.new(1, 0, 1, 0),
     BackgroundTransparency = 1,
@@ -423,7 +402,6 @@ create("UIListLayout", {
     Parent = scroll,
 })
 
---============  SECTION LABEL: SCRIPTS  ============
 local sectionScripts = create("TextLabel", {
     BackgroundTransparency = 1,
     Size = UDim2.new(1, 0, 0, 18),
@@ -436,9 +414,6 @@ local sectionScripts = create("TextLabel", {
     Parent = scroll,
 })
 
---============================================================
---  6. SCRIPT CARD GENERATOR
---============================================================
 local function createDivider(order)
     local wrap = create("Frame", {
         Size = UDim2.new(1, 0, 0, 20),
@@ -610,9 +585,6 @@ local function createScriptCard(entry, order)
     end)
 end
 
---============================================================
---  7. LOADER SYSTEM
---============================================================
 LOADER = {}
 
 function LOADER.resolveModule(moduleName)
@@ -632,7 +604,6 @@ function LOADER.resolveModule(moduleName)
 end
 
 function LOADER.attemptLoad(entry)
-    -- 1) Executor path (jika tersedia)
     local loadstringFn = rawget(_G, "loadstring")
     local httpGetFn    = rawget(_G, "HttpGet")
 
@@ -649,7 +620,6 @@ function LOADER.attemptLoad(entry)
         end
     end
 
-    -- 2) ModuleScript fallback (works di Studio / Roblox normal)
     local mod = LOADER.resolveModule(entry.Name)
     if mod then
         local ok, err = pcall(require, mod)
@@ -660,9 +630,6 @@ function LOADER.attemptLoad(entry)
     return false, "No executor API and no ModuleScript fallback found"
 end
 
---============================================================
---  8. CREDITS SECTION
---============================================================
 local function buildCredits(baseOrder)
     createDivider(baseOrder)
     baseOrder = baseOrder + 1
@@ -745,7 +712,6 @@ local function buildCredits(baseOrder)
     creditRow("Special Thanks", CONFIG.Credits.SpecialThanks, 3)
 end
 
---============  POPULATE  ============
 do
     local order = 1
     for _, entry in ipairs(Scripts) do
@@ -755,9 +721,6 @@ do
     buildCredits(order)
 end
 
---============================================================
---  9. DRAG SYSTEM
---============================================================
 local function isPointOverButton(input, buttons)
     local p = input.Position
     for _, b in ipairs(buttons) do
@@ -771,7 +734,6 @@ local function isPointOverButton(input, buttons)
     return false
 end
 
--- Header drag
 do
     local dragging, startInput, startPos = false, nil, nil
 
@@ -805,10 +767,6 @@ do
     end)
 end
 
---============================================================
---  10. OPEN/CLOSE + REOPEN SYSTEM
---============================================================
--- Floating Reopen Button (asset ID fixed)
 local reopen = create("ImageButton", {
     Name = "ReopenButton",
     Size = UDim2.new(0, 46, 0, 46),
@@ -853,7 +811,6 @@ local function hideMain()
     end)
 end
 
--- Drag reopen button (with tap detection)
 do
     local dragging, dragged, startInput, startPos = false, false, nil, nil
 
@@ -896,7 +853,6 @@ do
     end)
 end
 
--- Hook header buttons
 minimizeBtn.MouseButton1Click:Connect(function()
     hideMain()
     notify("Hub minimized", "info")
@@ -907,9 +863,6 @@ closeBtn.MouseButton1Click:Connect(function()
     notify("Hub closed — tap icon to reopen", "info")
 end)
 
---============================================================
---  11. INITIALIZE
---============================================================
 main.Visible = true
 uiScale.Scale = 0.88
 tween(uiScale, 0.35, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
