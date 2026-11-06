@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kelas Ceria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{
+  --ink:#1b1340; --sky:#5ec8ff; --sun:#ffd23f; --pink:#ff6fb5; --mint:#3ddc97; --paper:#ffffff;
+  --shadow:6px 6px 0 var(--ink); --line:4px solid var(--ink);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:'Baloo 2',system-ui,sans-serif; font-weight:500; color:var(--ink); min-height:100vh;
+  background-color:var(--sky);
+  background-image:radial-gradient(rgba(255,255,255,.55) 3px,transparent 3.5px);
+  background-size:28px 28px;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);
+}
+h1,h2,h3{font-family:'Bangers',cursive;letter-spacing:1.5px;font-weight:400;margin:0}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:4px dashed var(--pink);outline-offset:3px}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px 48px}
+.card{background:var(--paper);border:var(--line);border-radius:22px;box-shadow:var(--shadow);padding:20px}
+.btn{border:var(--line);border-radius:999px;padding:10px 22px;font-weight:800;font-size:1.05rem;color:var(--ink);background:var(--sun);box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.pink{background:var(--pink)} .btn.mint{background:var(--mint)} .btn.white{background:#fff}
+.hidden{display:none!important}
+
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.login .card{max-width:440px;width:100%;text-align:center;position:relative;transform:rotate(-1deg)}
+.login h1{font-size:3.4rem;line-height:1;color:var(--pink);-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink)}
+.login p{margin:10px 0 18px}
+.mascot{width:130px;height:130px;margin:-70px auto 6px;display:block;animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(3deg)}}
+#gbtn{display:flex;justify-content:center;min-height:44px;margin:14px 0 6px}
+.note{font-size:.85rem;background:#fff7cf;border:3px dashed var(--ink);border-radius:14px;padding:8px 12px;margin-top:14px;text-align:left}
+
+/* modal nama */
+.overlay{position:fixed;inset:0;background:rgba(27,19,64,.72);display:grid;place-items:center;padding:16px;z-index:20}
+.modal{max-width:440px;width:100%;background:var(--paper);border:var(--line);border-radius:26px;box-shadow:10px 10px 0 var(--sun);padding:24px;animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{transform:scale(.6) rotate(-6deg);opacity:0}}
+.modal h2{font-size:2.2rem;color:var(--pink);-webkit-text-stroke:1.5px var(--ink)}
+label{display:block;font-weight:800;margin:14px 0 6px}
+input[type=text]{width:100%;font:inherit;font-weight:700;padding:12px 16px;border:var(--line);border-radius:16px;background:#f2fbff}
+.err{color:#c4004f;font-weight:800;min-height:1.4em;margin:6px 0 0}
+
+/* beranda */
+.top{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--sun);}
+.who{display:flex;gap:12px;align-items:center}
+.avatar{width:58px;height:58px;border-radius:50%;border:var(--line);background:var(--mint);object-fit:cover;display:grid;place-items:center;font-family:'Bangers';font-size:1.8rem}
+.top h1{font-size:2.2rem;line-height:1}
+.top small{font-weight:700}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.grid{display:grid;gap:20px;margin-top:22px;grid-template-columns:1fr 1fr}
+.grid .wide{grid-column:1/-1}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.login h1{font-size:2.8rem}}
+.tag{display:inline-block;font-family:'Bangers';font-size:1.7rem;background:var(--pink);border:var(--line);border-radius:14px;padding:0 14px;margin-bottom:12px;transform:rotate(-2deg);box-shadow:3px 3px 0 var(--ink)}
+.tag.sky{background:var(--sky)} .tag.mint{background:var(--mint)}
+.ann{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ann li{border:3px solid var(--ink);border-radius:16px;padding:10px 14px;background:#fff7cf}
+.ann b{display:block}
+.tasks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.tasks label{display:flex;gap:12px;align-items:center;margin:0;border:3px solid var(--ink);border-radius:16px;padding:10px 14px;cursor:pointer;background:#eafff5}
+.tasks input{width:24px;height:24px;accent-color:var(--pink);flex:none}
+.tasks input:checked+span{text-decoration:line-through;opacity:.55}
+.tasks small{display:block;font-weight:700}
+.scroll{overflow-x:auto}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:560px;border:3px solid var(--ink);border-radius:14px;overflow:hidden}
+th,td{padding:8px 10px;text-align:left;border-bottom:3px solid var(--ink);border-right:3px solid var(--ink)}
+th{background:var(--sky);font-family:'Bangers';letter-spacing:1px;font-size:1.2rem;font-weight:400}
+tr:last-child td{border-bottom:0} th:last-child,td:last-child{border-right:0}
+td.today,th.today{background:var(--sun)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:999px;font-weight:800;z-index:30}
+
+html{scroll-behavior:smooth}
+section[id]{scroll-margin-top:90px}
+.nav{position:sticky;top:0;z-index:10;background:#fff;border-bottom:var(--line);padding-top:env(safe-area-inset-top,0px)}
+.nav-in{max-width:960px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-family:'Bangers';font-size:1.9rem;letter-spacing:1.5px}
+.brand svg{width:40px;height:40px}
+.burger{width:48px;height:48px;border:var(--line);border-radius:14px;background:var(--sun);box-shadow:3px 3px 0 var(--ink);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:0;transition:transform .12s,box-shadow .12s}
+.burger:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+.burger span{display:block;width:22px;height:4px;border-radius:4px;background:var(--ink)}
+.scrim{position:fixed;inset:0;background:rgba(27,19,64,.6);opacity:0;pointer-events:none;transition:opacity .25s;z-index:14}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(86vw,340px);background:#fff;border-left:var(--line);z-index:15;display:flex;flex-direction:column;gap:18px;padding:18px;padding-top:calc(18px + env(safe-area-inset-top,0px));transform:translateX(105%);visibility:hidden;transition:transform .3s cubic-bezier(.3,1,.4,1),visibility 0s .3s}
+.drawer.on{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.3,1,.4,1),visibility 0s}
+.dr-head{display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:3px dashed var(--ink)}
+.dr-head div:nth-child(2){min-width:0;flex:1}
+.dr-head b{display:block;line-height:1.2;overflow-wrap:anywhere}
+.dr-head small{display:block;font-weight:700;opacity:.7;overflow-wrap:anywhere}
+.x{width:40px;height:40px;flex:none;border:3px solid var(--ink);border-radius:50%;background:var(--pink);font-weight:800;font-size:1rem;color:var(--ink)}
+.dr-links{display:flex;flex-direction:column;gap:10px}
+.dr-links a{text-decoration:none;color:var(--ink);font-weight:800;border:3px solid var(--ink);border-radius:16px;padding:12px 16px;background:#f2fbff;transition:background .15s,transform .15s}
+.dr-links a:hover{background:var(--sun);transform:translateX(-4px)}
+.dr-foot{margin-top:auto;display:grid;gap:12px}
+.avatar{overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--sun);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;border-radius:50%;background:var(--pink);opacity:.35}
+.hero>*{position:relative;z-index:1}
+.hero h1{font-size:clamp(2rem,7vw,3.3rem);line-height:1;overflow-wrap:anywhere}
+.hero p{margin:4px 0 0;font-weight:700}
+.hero .avatar{width:84px;height:84px;font-size:2.6rem;flex:none}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px}
+.stat{padding:14px 18px}
+.stat b{font-family:'Bangers';font-size:2.4rem;line-height:1;display:block;letter-spacing:1px}
+.stat span{font-weight:700;font-size:.95rem}
+.bar{height:12px;border:3px solid var(--ink);border-radius:99px;background:#fff;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--mint);transition:width .5s}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{border:3px solid var(--ink);border-radius:999px;padding:6px 16px;font-weight:800;background:#d9f3ff}
+.chip:nth-child(3n+2){background:#c9f7e2}.chip:nth-child(3n){background:#ffd9ec}
+.chip small{font-weight:700;opacity:.65;margin-right:6px}
+.grid .card{transition:transform .15s,box-shadow .15s}
+.grid .card:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.foot{text-align:center;font-weight:700;padding:4px 16px 28px}
+@media(max-width:560px){.stats{grid-template-columns:1fr}.hero .avatar{width:64px;height:64px;font-size:2rem}}
+
+.page{display:none}
+.page.show{display:block}
+.hero.page.show{display:flex}
+.hero.welcome{flex-direction:column;text-align:center;padding:44px 20px;min-height:340px;justify-content:center}
+.hero.welcome svg{width:130px;height:130px;animation:bob 2.4s ease-in-out infinite}
+.hero.welcome h1{font-size:clamp(2.2rem,8vw,3.8rem);line-height:1.05;color:var(--pink);-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink);max-width:14em}
+.grid{grid-template-columns:1fr;margin-top:0}
+.grid .page.show+.page.show{margin-top:0}
+.dr-links a.on{background:var(--sun)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<main id="vLogin" class="login hidden">
+  <div class="card">
+    <svg class="mascot" viewBox="0 0 130 130" aria-hidden="true">
+      <ellipse cx="65" cy="120" rx="34" ry="7" fill="#1b1340" opacity=".25"/>
+      <path d="M20 70c0-30 20-52 45-52s45 22 45 52c0 26-18 46-45 46S20 96 20 70z" fill="#ffd23f" stroke="#1b1340" stroke-width="5"/>
+      <path d="M40 24L32 6l22 10M90 24l8-18-22 10" fill="#ff6fb5" stroke="#1b1340" stroke-width="5" stroke-linejoin="round"/>
+      <circle cx="48" cy="62" r="12" fill="#fff" stroke="#1b1340" stroke-width="4"/><circle cx="82" cy="62" r="12" fill="#fff" stroke="#1b1340" stroke-width="4"/>
+      <circle cx="50" cy="64" r="5" fill="#1b1340"/><circle cx="80" cy="64" r="5" fill="#1b1340"/>
+      <path d="M46 86q19 20 38 0z" fill="#ff6fb5" stroke="#1b1340" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="33" cy="82" r="6" fill="#ff6fb5" opacity=".7"/><circle cx="97" cy="82" r="6" fill="#ff6fb5" opacity=".7"/>
+    </svg>
+    <h1>Kelas Ceria!</h1>
+    <p>Masuk dulu yuk, biar bisa lihat jadwal, pengumuman, dan tugas kelas.</p>
+    <div id="gbtn"></div>
+    <button id="demoBtn" class="btn white hidden" type="button">Coba mode demo</button>
+    <div id="cfgNote" class="note hidden"></div>
+  </div>
+</main>
+
+<!-- BERANDA -->
+<div id="vHome" class="hidden">
+  <header class="nav">
+    <div class="nav-in">
+      <a class="brand" href="#beranda" data-go="beranda">
+        <svg viewBox="0 0 130 130" aria-hidden="true"><path d="M20 70c0-30 20-52 45-52s45 22 45 52c0 26-18 46-45 46S20 96 20 70z" fill="#ffd23f" stroke="#1b1340" stroke-width="7"/><circle cx="48" cy="64" r="8" fill="#1b1340"/><circle cx="82" cy="64" r="8" fill="#1b1340"/><path d="M46 88q19 18 38 0" fill="none" stroke="#1b1340" stroke-width="7" stroke-linecap="round"/></svg>
+        <span>Kelas Ceria</span>
+      </a>
+      <button id="menuBtn" class="burger" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div id="scrim" class="scrim"></div>
+  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Menu">
+    <div class="dr-head">
+      <div id="drAvatar" class="avatar"></div>
+      <div><b id="drName"></b><small id="drMail"></small></div>
+      <button id="closeMenu" class="x" type="button" aria-label="Tutup menu">&#10005;</button>
+    </div>
+    <nav class="dr-links">
+      <a href="#beranda" data-go="beranda" class="on">Beranda</a>
+      <a href="#pengumuman" data-go="pengumuman">Pengumuman</a>
+      <a href="#tugas" data-go="tugas">Tugas kelas</a>
+      <a href="#jadwal" data-go="jadwal">Jadwal</a>
+    </nav>
+    <div class="dr-foot">
+      <button id="editName" class="btn mint" type="button">Ubah nama</button>
+      <button id="logout" class="btn pink" type="button">Keluar</button>
+    </div>
+  </aside>
+
+  <main class="wrap" id="top">
+    <section class="card hero welcome page show" data-page="beranda">
+      <svg viewBox="0 0 130 130" aria-hidden="true"><path d="M20 70c0-30 20-52 45-52s45 22 45 52c0 26-18 46-45 46S20 96 20 70z" fill="#fff" stroke="#1b1340" stroke-width="5"/><path d="M40 24L32 6l22 10M90 24l8-18-22 10" fill="#ff6fb5" stroke="#1b1340" stroke-width="5" stroke-linejoin="round"/><circle cx="48" cy="62" r="12" fill="#fff" stroke="#1b1340" stroke-width="4"/><circle cx="82" cy="62" r="12" fill="#fff" stroke="#1b1340" stroke-width="4"/><circle cx="50" cy="64" r="5" fill="#1b1340"/><circle cx="80" cy="64" r="5" fill="#1b1340"/><path d="M46 86q19 20 38 0z" fill="#ff6fb5" stroke="#1b1340" stroke-width="4" stroke-linejoin="round"/></svg>
+      <h1>Selamat datang di web kelas kami</h1>
+    </section>
+
+    <div class="grid">
+      <section class="card page" id="pengumuman" data-page="pengumuman">
+        <span class="tag">Pengumuman</span>
+        <ul class="ann" id="ann"></ul>
+      </section>
+      <section class="card page" id="tugas" data-page="tugas">
+        <span class="tag mint">Tugas kelas</span>
+        <p id="taskInfo" style="font-weight:700;margin:0 0 12px"></p>
+        <ul class="tasks" id="tasks"></ul>
+      </section>
+      <section class="card wide page" id="hariini" data-page="jadwal">
+        <span class="tag">Jadwal hari ini</span>
+        <div class="chips" id="todayList"></div>
+      </section>
+      <section class="card wide page" id="jadwal" data-page="jadwal">
+        <span class="tag sky">Jadwal lengkap</span>
+        <div class="scroll"><table id="sched"></table></div>
+      </section>
+    </div>
+  </main>
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<!-- MODAL NAMA LENGKAP -->
+<div id="vName" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+  <div class="modal">
+    <h2 id="nameTitle">Halo, teman baru!</h2>
+    <p id="nameDesc">Sebelum masuk kelas, isi nama lengkapmu dulu ya. Nama ini akan tampil di beranda.</p>
+    <label for="fullName">Nama lengkap</label>
+    <input id="fullName" type="text" autocomplete="name" maxlength="60" placeholder="Contoh: Budi Santoso">
+    <p id="nameErr" class="err" role="alert"></p>
+    <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+      <button id="saveName" class="btn" type="button">Simpan &amp; masuk</button>
+      <button id="cancelName" class="btn white hidden" type="button">Batal</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ PENGATURAN ============ */
+// Isi dengan OAuth Client ID dari Google Cloud Console (tipe: Web application).
+// Kalau masih kosong, tombol Google asli tidak muncul dan tersedia mode demo.
+const GOOGLE_CLIENT_ID = "";
+
+const NAMA_KELAS = "Kelas 8A";
+const JADWAL = {
+  Senin:  ["Upacara", "Matematika", "Matematika", "B. Indonesia", "IPA"],
+  Selasa: ["IPA", "IPA", "B. Inggris", "PJOK", "PJOK"],
+  Rabu:   ["IPS", "IPS", "Matematika", "Seni Budaya", "Informatika"],
+  Kamis:  ["B. Indonesia", "B. Indonesia", "PKn", "Agama", "Agama"],
+  Jumat:  ["Pramuka", "B. Inggris", "Informatika", "Informatika", "Literasi"]
+};
+const PENGUMUMAN = [
+  ["Ulangan Matematika", "Senin depan, bab Persamaan Linear. Jangan lupa belajar!"],
+  ["Piket kelas", "Kelompok 3 bertugas minggu ini. Jaga kebersihan kelas ya."],
+  ["Kerja bakti", "Jumat pagi, bawa kantong sampah dan sarung tangan."]
+];
+const TUGAS = [
+  ["t1", "Rangkuman IPA bab Getaran", "Kumpul Rabu"],
+  ["t2", "Latihan soal Matematika hal. 45", "Kumpul Kamis"],
+  ["t3", "Poster Hari Pahlawan (IPS)", "Kumpul Jumat"]
+];
+
+/* ============ PENYIMPANAN ============ */
+const store = {
+  get(k, d){ try{ return JSON.parse(localStorage.getItem(k)) ?? d }catch(e){ return d } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)) }catch(e){} }
+};
+const $ = id => document.getElementById(id);
+const views = ["vLogin","vHome","vName"];
+let session = store.get("kelas_session", null);   // {sub,email,picture,gname}
+let profiles = store.get("kelas_profiles", {});   // {sub:{fullName}}
+let editing = false;
+
+function show(...names){ views.forEach(v => $(v).classList.toggle("hidden", !names.includes(v))) }
+function toast(t){
+  const e = document.createElement("div"); e.className = "toast"; e.textContent = t;
+  document.body.appendChild(e); setTimeout(() => e.remove(), 2200);
+}
+
+/* ============ ALUR UTAMA ============ */
+function route(){
+  if(!session){ show("vLogin"); return }
+  const p = profiles[session.sub];
+  if(!p || !p.fullName){ // login pertama kali: wajib isi nama lengkap
+    openNameModal(false); show("vHome","vName"); renderHome(); return;
+  }
+  renderHome(); show("vHome");
+}
+
+function onLogin(user){
+  session = user; store.set("kelas_session", session);
+  route();
+}
+
+/* ============ GOOGLE LOGIN ============ */
+function decodeJwt(token){
+  const b = token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/");
+  const json = decodeURIComponent(atob(b).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join(""));
+  return JSON.parse(json);
+}
+function handleCredential(res){
+  try{
+    const d = decodeJwt(res.credential);
+    onLogin({ sub: d.sub, email: d.email, picture: d.picture, gname: d.name });
+  }catch(e){ toast("Login gagal, coba lagi ya") }
+}
+function initGoogle(){
+  if(!GOOGLE_CLIENT_ID){
+    $("demoBtn").classList.remove("hidden");
+    const n = $("cfgNote"); n.classList.remove("hidden");
+    n.innerHTML = "<b>Catatan:</b> Client ID Google belum diisi, jadi tombol login Google asli belum aktif. Isi <code>GOOGLE_CLIENT_ID</code> di bagian pengaturan kode. Sementara itu kamu bisa mencoba alurnya lewat mode demo.";
+    return;
+  }
+  if(!(window.google && google.accounts && google.accounts.id)){ setTimeout(initGoogle, 300); return }
+  google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredential });
+  google.accounts.id.renderButton($("gbtn"), { theme:"filled_blue", size:"large", shape:"pill", text:"signin_with", logo_alignment:"left", width:280 });
+}
+$("demoBtn").onclick = () => onLogin({ sub:"demo-user", email:"siswa.demo@gmail.com", picture:"", gname:"Siswa Demo" });
+
+/* ============ NAMA LENGKAP ============ */
+function openNameModal(isEdit){
+  editing = isEdit;
+  $("nameTitle").textContent = isEdit ? "Ubah nama" : "Halo, teman baru!";
+  $("nameDesc").textContent = isEdit ? "Perbarui nama lengkapmu di bawah ini." : "Sebelum masuk kelas, isi nama lengkapmu dulu ya. Nama ini akan tampil di beranda.";
+  $("cancelName").classList.toggle("hidden", !isEdit);
+  $("fullName").value = isEdit ? (profiles[session.sub]?.fullName || "") : "";
+  $("nameErr").textContent = "";
+  $("vName").classList.remove("hidden");
+  setTimeout(() => $("fullName").focus(), 50);
+}
+function cleanName(s){ return s.trim().replace(/\s+/g, " ") }
+function validName(s){
+  if(s.length < 3) return "Nama minimal 3 huruf ya.";
+  if(!/^[\p{L}][\p{L}\s.'’-]*$/u.test(s)) return "Pakai huruf saja ya, tanpa angka atau simbol aneh.";
+  return "";
+}
+function saveName(){
+  const v = cleanName($("fullName").value), e = validName(v);
+  if(e){ $("nameErr").textContent = e; return }
+  profiles[session.sub] = { fullName: v };
+  store.set("kelas_profiles", profiles);
+  $("vName").classList.add("hidden");
+  renderHome(); show("vHome");
+  toast(editing ? "Nama diperbarui" : "Selamat datang, " + v.split(" ")[0] + "!");
+}
+$("saveName").onclick = saveName;
+$("fullName").addEventListener("keydown", e => { if(e.key === "Enter") saveName() });
+$("cancelName").onclick = () => $("vName").classList.add("hidden");
+$("editName").onclick = () => openNameModal(true);
+$("logout").onclick = () => {
+  if(window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect();
+  session = null; store.set("kelas_session", null); route();
+};
+
+/* ============ BERANDA ============ */
+function paintAvatar(el, name){
+  el.innerHTML = "";
+  const first = (name[0] || "?").toUpperCase();
+  if(session.picture){
+    const img = new Image(); img.src = session.picture; img.alt = ""; img.referrerPolicy = "no-referrer";
+    img.onerror = () => { el.textContent = first };
+    el.appendChild(img);
+  } else el.textContent = first;
+}
+function renderHome(){
+  if(!session) return;
+  const name = profiles[session.sub]?.fullName || "", now = new Date(), jam = now.getHours();
+  paintAvatar($("drAvatar"), name);
+  $("drName").textContent = name; $("drMail").textContent = session.email || "";
+  $("foot").textContent = "© " + now.getFullYear() + " Kelas Ceria. Dibuat dengan semangat untuk " + NAMA_KELAS + ".";
+
+  $("ann").innerHTML = PENGUMUMAN.map(([t, d]) => `<li><b>${t}</b>${d}</li>`).join("");
+
+  const done = store.get("kelas_tugas_" + session.sub, {});
+  $("tasks").innerHTML = TUGAS.map(([id, t, d]) =>
+    `<li><label><input type="checkbox" data-id="${id}" ${done[id] ? "checked" : ""}><span>${t}<small>${d}</small></span></label></li>`).join("");
+  const upd = () => { $("taskInfo").textContent = TUGAS.filter(t => done[t[0]]).length + " dari " + TUGAS.length + " tugas sudah selesai"; };
+  upd();
+  $("tasks").onchange = e => {
+    done[e.target.dataset.id] = e.target.checked;
+    store.set("kelas_tugas_" + session.sub, done); upd();
+    if(e.target.checked) toast("Mantap, tugas selesai!");
+  };
+
+  const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][now.getDay()];
+  const list = JADWAL[hari] || [];
+  $("todayList").innerHTML = list.length
+    ? list.map((m, i) => `<span class="chip"><small>Jam ${i + 1}</small>${m}</span>`).join("")
+    : "<p style='margin:0;font-weight:700'>Hari ini libur. Istirahat yang cukup ya!</p>";
+
+  const days = Object.keys(JADWAL), rows = JADWAL[days[0]].length;
+  let h = "<thead><tr><th>Jam</th>" + days.map(d => `<th class="${d === hari ? "today" : ""}">${d}</th>`).join("") + "</tr></thead><tbody>";
+  for(let i = 0; i < rows; i++){
+    h += `<tr><td><b>${i + 1}</b></td>` + days.map(d => `<td class="${d === hari ? "today" : ""}">${JADWAL[d][i]}</td>`).join("") + "</tr>";
+  }
+  $("sched").innerHTML = h + "</tbody>";
+  go(curPage);
+}
+
+/* ============ HALAMAN ============ */
+let curPage = "beranda";
+function go(p){
+  curPage = p;
+  document.querySelectorAll(".page").forEach(e => e.classList.toggle("show", e.dataset.page === p));
+  document.querySelectorAll(".dr-links a").forEach(a => a.classList.toggle("on", a.dataset.go === p));
+  window.scrollTo(0, 0);
+}
+
+/* ============ MENU GARIS TIGA ============ */
+const drawer = $("drawer"), scrim = $("scrim"), menuBtn = $("menuBtn");
+function setMenu(open){
+  drawer.classList.toggle("on", open); scrim.classList.toggle("on", open);
+  menuBtn.setAttribute("aria-expanded", String(open));
+  drawer.setAttribute("aria-hidden", String(!open));
+  document.body.style.overflow = open ? "hidden" : "";
+  if(open) $("closeMenu").focus();
+}
+menuBtn.onclick = () => setMenu(true);
+$("closeMenu").onclick = () => setMenu(false);
+scrim.onclick = () => setMenu(false);
+document.querySelectorAll("[data-go]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); go(a.dataset.go); setMenu(false) }));
+$("editName").addEventListener("click", () => setMenu(false));
+$("logout").addEventListener("click", () => { setMenu(false); curPage = "beranda" });
+document.addEventListener("keydown", e => { if(e.key === "Escape" && drawer.classList.contains("on")){ setMenu(false); menuBtn.focus() } });
+
+/* ============ MULAI ============ */
+document.title = NAMA_KELAS + " | Kelas Ceria";
+initGoogle();
+route();
+</script>
+</body>
+</html>
