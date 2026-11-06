@@ -125,15 +125,66 @@ section[id]{scroll-margin-top:90px}
 .foot{text-align:center;font-weight:700;padding:4px 16px 28px}
 @media(max-width:560px){.stats{grid-template-columns:1fr}.hero .avatar{width:64px;height:64px;font-size:2rem}}
 
-.page{display:none}
-.page.show{display:block}
-.hero.page.show{display:flex}
 .hero.welcome{flex-direction:column;text-align:center;padding:44px 20px;min-height:340px;justify-content:center}
 .hero.welcome svg{width:130px;height:130px;animation:bob 2.4s ease-in-out infinite}
 .hero.welcome h1{font-size:clamp(2.2rem,8vw,3.8rem);line-height:1.05;color:var(--pink);-webkit-text-stroke:2px var(--ink);text-shadow:4px 4px 0 var(--ink);max-width:14em}
 .grid{grid-template-columns:1fr;margin-top:0}
 .grid .page.show+.page.show{margin-top:0}
 .dr-links a.on{background:var(--sun)}
+
+/* ===== HERO PEMBUKA ===== */
+.hero2{position:relative;overflow:hidden;min-height:min(760px,calc(100svh - 68px));display:grid;place-items:center;padding:60px 20px 200px;background:linear-gradient(#45bdff 0%,#8fdcff 62%,#d6f3ff 100%)}
+.hero2::before{content:"";position:absolute;left:0;right:0;top:0;height:56px;z-index:3;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='56' viewBox='0 0 90 56'%3E%3Cpath d='M0 6Q22 20 45 6T90 6' fill='none' stroke='%231b1340' stroke-width='3'/%3E%3Cpath d='M8 13L30 18L19 44Z' fill='%23ff6fb5' stroke='%231b1340' stroke-width='3' stroke-linejoin='round'/%3E%3Cpath d='M53 18L75 13L64 44Z' fill='%23ffd23f' stroke='%231b1340' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E") repeat-x}
+.sun{position:absolute;right:7%;top:96px;width:96px;height:96px;border-radius:50%;background:var(--sun);border:var(--line);box-shadow:0 0 0 14px rgba(255,210,63,.35),0 0 0 30px rgba(255,210,63,.18);animation:bob 4s ease-in-out infinite}
+.cloud{position:absolute;width:150px;animation:drift 46s linear infinite}
+.cloud.c2{width:110px;top:62%;left:55%;animation-duration:60s;animation-delay:-20s}
+.cloud.c1{top:20%;left:6%}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(120vw)}}
+.star{position:absolute;width:34px;animation:twinkle 2.8s ease-in-out infinite}
+@keyframes twinkle{50%{transform:scale(.6) rotate(25deg);opacity:.6}}
+.hills{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:190px;z-index:1}
+.hills path{vector-effect:non-scaling-stroke}
+.hero-in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center}
+.hero-in .mascot2{width:min(48vw,190px);height:auto;animation:bob 2.6s ease-in-out infinite;filter:drop-shadow(6px 8px 0 rgba(27,19,64,.25))}
+.hero-in h1{font-size:clamp(2.7rem,12vw,4.2rem);line-height:1.02;letter-spacing:2px;color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:5px 5px 0 var(--ink);animation:pop .8s cubic-bezier(.3,1.6,.5,1) both}
+.hero-in h1 span{display:block}
+.hero-in h1 span+span{color:var(--sun)}
+
+/* ===== ISI ===== */
+.content{background-color:var(--mint);background-image:radial-gradient(rgba(255,255,255,.55) 3px,transparent 3.5px);background-size:28px 28px}
+.cols{display:grid;gap:22px;grid-template-columns:1fr}
+#jadwal{margin-top:22px}
+.ch{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.ch h2{font-size:2rem;line-height:1}
+.ico{width:52px;height:52px;flex:none;border:var(--line);border-radius:16px;display:grid;place-items:center;font-size:1.6rem;box-shadow:3px 3px 0 var(--ink)}
+.ann li{display:flex;gap:12px;align-items:flex-start}
+.ann li:nth-child(2){background:#d9f3ff}.ann li:nth-child(3){background:#ffd9ec}
+.ai{font-size:1.6rem;line-height:1.2}
+.sub{font-weight:800;margin:0 0 10px}
+.chips{margin-bottom:20px}
+.d-only{display:none}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 4px 14px}
+.tabs button{flex:none;border:3px solid var(--ink);border-radius:999px;background:#fff;padding:6px 16px;font-weight:800;color:var(--ink)}
+.tabs button.on{background:var(--pink);box-shadow:3px 3px 0 var(--ink)}
+.dlist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.dlist li{display:flex;align-items:center;gap:14px;border:3px solid var(--ink);border-radius:16px;padding:10px 14px;background:#f2fbff;font-weight:800}
+.dlist li:nth-child(even){background:#fff7cf}
+.dlist b{width:36px;height:36px;border-radius:50%;border:3px solid var(--ink);background:var(--sun);display:grid;place-items:center;font-family:'Bangers';font-size:1.2rem;font-weight:400}
+.nav-links{display:none;gap:10px}
+.nav-links a{text-decoration:none;color:var(--ink);font-weight:800;border:3px solid transparent;border-radius:999px;padding:6px 16px;transition:background .15s,border-color .15s}
+.nav-links a:hover,.nav-links a.on{background:var(--sun);border-color:var(--ink)}
+@media(min-width:760px){.d-only{display:block}.m-only{display:none}}
+@media(min-width:900px){
+  .nav-links{display:flex}
+  .hero2{padding:70px 40px 220px}
+  .hero-in{flex-direction:row-reverse;gap:80px;text-align:left}
+  .hero-in .mascot2{width:300px}
+  .hero-in h1{font-size:clamp(4.2rem,7.2vw,6.6rem)}
+  .sun{width:130px;height:130px;right:9%}
+  .cols{grid-template-columns:1fr 1fr;align-items:start}
+  .content .wrap{max-width:1100px;padding:34px 24px 56px}
+  .card{padding:26px}
+}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -167,6 +218,11 @@ section[id]{scroll-margin-top:90px}
         <svg viewBox="0 0 130 130" aria-hidden="true"><path d="M20 70c0-30 20-52 45-52s45 22 45 52c0 26-18 46-45 46S20 96 20 70z" fill="#ffd23f" stroke="#1b1340" stroke-width="7"/><circle cx="48" cy="64" r="8" fill="#1b1340"/><circle cx="82" cy="64" r="8" fill="#1b1340"/><path d="M46 88q19 18 38 0" fill="none" stroke="#1b1340" stroke-width="7" stroke-linecap="round"/></svg>
         <span>Kelas Ceria</span>
       </a>
+      <nav class="nav-links">
+        <a href="#pengumuman" data-go="pengumuman">Pengumuman</a>
+        <a href="#tugas" data-go="tugas">Tugas kelas</a>
+        <a href="#jadwal" data-go="jadwal">Jadwal</a>
+      </nav>
       <button id="menuBtn" class="burger" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
     </div>
   </header>
@@ -189,33 +245,53 @@ section[id]{scroll-margin-top:90px}
     </div>
   </aside>
 
-  <main class="wrap" id="top">
-    <section class="card hero welcome page show" data-page="beranda">
-      <svg viewBox="0 0 130 130" aria-hidden="true"><path d="M20 70c0-30 20-52 45-52s45 22 45 52c0 26-18 46-45 46S20 96 20 70z" fill="#fff" stroke="#1b1340" stroke-width="5"/><path d="M40 24L32 6l22 10M90 24l8-18-22 10" fill="#ff6fb5" stroke="#1b1340" stroke-width="5" stroke-linejoin="round"/><circle cx="48" cy="62" r="12" fill="#fff" stroke="#1b1340" stroke-width="4"/><circle cx="82" cy="62" r="12" fill="#fff" stroke="#1b1340" stroke-width="4"/><circle cx="50" cy="64" r="5" fill="#1b1340"/><circle cx="80" cy="64" r="5" fill="#1b1340"/><path d="M46 86q19 20 38 0z" fill="#ff6fb5" stroke="#1b1340" stroke-width="4" stroke-linejoin="round"/></svg>
-      <h1>Selamat datang di web kelas kami</h1>
-    </section>
+  <section class="hero2" id="top">
+    <div class="sun" aria-hidden="true"></div>
+    <svg class="cloud c1" viewBox="0 0 140 70" aria-hidden="true"><path d="M30 62c-14 0-24-9-24-21s10-21 23-20c3-13 15-20 29-20 15 0 26 8 30 20 14-2 26 7 26 19s-10 22-24 22z" fill="#fff" stroke="#1b1340" stroke-width="4" stroke-linejoin="round"/></svg><svg class="cloud c2" viewBox="0 0 140 70" aria-hidden="true"><path d="M30 62c-14 0-24-9-24-21s10-21 23-20c3-13 15-20 29-20 15 0 26 8 30 20 14-2 26 7 26 19s-10 22-24 22z" fill="#fff" stroke="#1b1340" stroke-width="4" stroke-linejoin="round"/></svg>
+    <svg class="star" viewBox="0 0 40 40" style="left:14%;top:58%;animation-delay:0s" aria-hidden="true"><path d="M20 2l5 12 13 1-10 9 3 13-11-7-11 7 3-13L2 15l13-1z" fill="#ffd23f" stroke="#1b1340" stroke-width="3" stroke-linejoin="round"/></svg><svg class="star" viewBox="0 0 40 40" style="left:84%;top:52%;animation-delay:-1s" aria-hidden="true"><path d="M20 2l5 12 13 1-10 9 3 13-11-7-11 7 3-13L2 15l13-1z" fill="#ffd23f" stroke="#1b1340" stroke-width="3" stroke-linejoin="round"/></svg><svg class="star" viewBox="0 0 40 40" style="left:46%;top:22%;animation-delay:-2s" aria-hidden="true"><path d="M20 2l5 12 13 1-10 9 3 13-11-7-11 7 3-13L2 15l13-1z" fill="#ffd23f" stroke="#1b1340" stroke-width="3" stroke-linejoin="round"/></svg><svg class="star" viewBox="0 0 40 40" style="left:70%;top:16%;animation-delay:-.6s" aria-hidden="true"><path d="M20 2l5 12 13 1-10 9 3 13-11-7-11 7 3-13L2 15l13-1z" fill="#ffd23f" stroke="#1b1340" stroke-width="3" stroke-linejoin="round"/></svg>
+    <div class="hero-in">
+      <svg class="mascot2" viewBox="0 0 130 130" aria-hidden="true">
+        <path d="M20 74c0-28 20-48 45-48s45 20 45 48c0 24-18 42-45 42S20 98 20 74z" fill="#ffd23f" stroke="#1b1340" stroke-width="5"/>
+        <path d="M24 38L65 16l41 22-41 20z" fill="#1b1340" stroke="#1b1340" stroke-width="5" stroke-linejoin="round"/>
+        <path d="M44 52v12q21 12 42 0V52" fill="#2d2266" stroke="#1b1340" stroke-width="4"/>
+        <path d="M106 38v26" stroke="#ff6fb5" stroke-width="5" stroke-linecap="round"/><circle cx="106" cy="68" r="6" fill="#ff6fb5" stroke="#1b1340" stroke-width="3"/>
+        <circle cx="48" cy="82" r="11" fill="#fff" stroke="#1b1340" stroke-width="4"/><circle cx="82" cy="82" r="11" fill="#fff" stroke="#1b1340" stroke-width="4"/>
+        <circle cx="50" cy="84" r="5" fill="#1b1340"/><circle cx="80" cy="84" r="5" fill="#1b1340"/>
+        <path d="M50 99q15 14 30 0z" fill="#ff6fb5" stroke="#1b1340" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="31" cy="97" r="5" fill="#ff6fb5" opacity=".7"/><circle cx="99" cy="97" r="5" fill="#ff6fb5" opacity=".7"/>
+      </svg>
+      <h1><span>Selamat datang</span><span>di web kelas kami</span></h1>
+    </div>
+    <svg class="hills" viewBox="0 0 1440 190" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 80Q240 10 520 70T1040 50T1440 85V200H0Z" fill="#8be9bd" stroke="#1b1340" stroke-width="4"/>
+      <path d="M0 140Q300 80 640 130T1440 105V200H0Z" fill="#3ddc97" stroke="#1b1340" stroke-width="4"/>
+    </svg>
+  </section>
 
-    <div class="grid">
-      <section class="card page" id="pengumuman" data-page="pengumuman">
-        <span class="tag">Pengumuman</span>
-        <ul class="ann" id="ann"></ul>
-      </section>
-      <section class="card page" id="tugas" data-page="tugas">
-        <span class="tag mint">Tugas kelas</span>
-        <p id="taskInfo" style="font-weight:700;margin:0 0 12px"></p>
-        <ul class="tasks" id="tasks"></ul>
-      </section>
-      <section class="card wide page" id="hariini" data-page="jadwal">
-        <span class="tag">Jadwal hari ini</span>
+  <main class="content">
+    <div class="wrap">
+      <div class="cols">
+        <section class="card" id="pengumuman">
+          <div class="ch"><span class="ico" style="background:var(--pink)">📣</span><h2>Pengumuman</h2></div>
+          <ul class="ann" id="ann"></ul>
+        </section>
+        <section class="card" id="tugas">
+          <div class="ch"><span class="ico" style="background:var(--mint)">📝</span><h2>Tugas kelas</h2></div>
+          <p id="taskInfo" class="sub" style="margin-bottom:8px"></p>
+          <div class="bar" style="margin:0 0 14px"><i id="bar"></i></div>
+          <ul class="tasks" id="tasks"></ul>
+        </section>
+      </div>
+      <section class="card" id="jadwal">
+        <div class="ch"><span class="ico" style="background:var(--sky)">🗓️</span><h2>Jadwal pelajaran</h2></div>
+        <p class="sub" id="todayTitle"></p>
         <div class="chips" id="todayList"></div>
-      </section>
-      <section class="card wide page" id="jadwal" data-page="jadwal">
-        <span class="tag sky">Jadwal lengkap</span>
-        <div class="scroll"><table id="sched"></table></div>
+        <div class="scroll d-only"><table id="sched"></table></div>
+        <div class="m-only"><div class="tabs" id="dayTabs"></div><ol class="dlist" id="dayList"></ol></div>
       </section>
     </div>
+    <footer class="foot" id="foot"></footer>
   </main>
-  <footer class="foot" id="foot"></footer>
 </div>
 
 <!-- MODAL NAMA LENGKAP -->
@@ -367,12 +443,13 @@ function renderHome(){
   $("drName").textContent = name; $("drMail").textContent = session.email || "";
   $("foot").textContent = "© " + now.getFullYear() + " Kelas Ceria. Dibuat dengan semangat untuk " + NAMA_KELAS + ".";
 
-  $("ann").innerHTML = PENGUMUMAN.map(([t, d]) => `<li><b>${t}</b>${d}</li>`).join("");
+  const IK = ["📚","🧹","🌱","📌"];
+  $("ann").innerHTML = PENGUMUMAN.map(([t, d], i) => `<li><span class="ai">${IK[i % IK.length]}</span><div><b>${t}</b>${d}</div></li>`).join("");
 
   const done = store.get("kelas_tugas_" + session.sub, {});
   $("tasks").innerHTML = TUGAS.map(([id, t, d]) =>
     `<li><label><input type="checkbox" data-id="${id}" ${done[id] ? "checked" : ""}><span>${t}<small>${d}</small></span></label></li>`).join("");
-  const upd = () => { $("taskInfo").textContent = TUGAS.filter(t => done[t[0]]).length + " dari " + TUGAS.length + " tugas sudah selesai"; };
+  const upd = () => { const n = TUGAS.filter(t => done[t[0]]).length; $("taskInfo").textContent = n + " dari " + TUGAS.length + " tugas sudah selesai"; $("bar").style.width = (n / TUGAS.length * 100) + "%"; };
   upd();
   $("tasks").onchange = e => {
     done[e.target.dataset.id] = e.target.checked;
@@ -382,6 +459,7 @@ function renderHome(){
 
   const hari = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"][now.getDay()];
   const list = JADWAL[hari] || [];
+  $("todayTitle").textContent = "Hari ini, " + hari;
   $("todayList").innerHTML = list.length
     ? list.map((m, i) => `<span class="chip"><small>Jam ${i + 1}</small>${m}</span>`).join("")
     : "<p style='margin:0;font-weight:700'>Hari ini libur. Istirahat yang cukup ya!</p>";
@@ -392,16 +470,23 @@ function renderHome(){
     h += `<tr><td><b>${i + 1}</b></td>` + days.map(d => `<td class="${d === hari ? "today" : ""}">${JADWAL[d][i]}</td>`).join("") + "</tr>";
   }
   $("sched").innerHTML = h + "</tbody>";
-  go(curPage);
+  if(!JADWAL[selDay]) selDay = JADWAL[hari] ? hari : days[0];
+  $("dayTabs").onclick = e => { const b = e.target.closest("button"); if(b){ selDay = b.dataset.d; renderDay() } };
+  renderDay();
+}
+let selDay = null;
+function renderDay(){
+  $("dayTabs").innerHTML = Object.keys(JADWAL).map(d => `<button type="button" data-d="${d}" class="${d === selDay ? "on" : ""}">${d}</button>`).join("");
+  $("dayList").innerHTML = JADWAL[selDay].map((m, i) => `<li><b>${i + 1}</b><span>${m}</span></li>`).join("");
 }
 
 /* ============ HALAMAN ============ */
 let curPage = "beranda";
 function go(p){
   curPage = p;
-  document.querySelectorAll(".page").forEach(e => e.classList.toggle("show", e.dataset.page === p));
-  document.querySelectorAll(".dr-links a").forEach(a => a.classList.toggle("on", a.dataset.go === p));
-  window.scrollTo(0, 0);
+  document.querySelectorAll("[data-go]").forEach(a => a.classList.toggle("on", a.dataset.go === p));
+  const t = p === "beranda" ? null : $(p);
+  window.scrollTo({ top: t ? t.getBoundingClientRect().top + window.scrollY - 84 : 0, behavior: "smooth" });
 }
 
 /* ============ MENU GARIS TIGA ============ */
@@ -416,7 +501,7 @@ function setMenu(open){
 menuBtn.onclick = () => setMenu(true);
 $("closeMenu").onclick = () => setMenu(false);
 scrim.onclick = () => setMenu(false);
-document.querySelectorAll("[data-go]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); go(a.dataset.go); setMenu(false) }));
+document.querySelectorAll("[data-go]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); setMenu(false); go(a.dataset.go) }));
 $("editName").addEventListener("click", () => setMenu(false));
 $("logout").addEventListener("click", () => { setMenu(false); curPage = "beranda" });
 document.addEventListener("keydown", e => { if(e.key === "Escape" && drawer.classList.contains("on")){ setMenu(false); menuBtn.focus() } });
