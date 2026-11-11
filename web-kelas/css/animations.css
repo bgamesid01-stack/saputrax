@@ -1,6 +1,3 @@
-/* css/animations.css
-   Keyframes animasi dan pengaturan "kurangi gerakan". */
-
 @keyframes bob {
   50% {
     transform: translateY(-8px) rotate(3deg);
